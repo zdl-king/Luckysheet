@@ -1,6 +1,6 @@
 import { isEditMode } from '../global/validate';
 import cleargridelement from '../global/cleargridelement';
-import { getcellvalue, datagridgrowth,getcellFormula } from '../global/getdata';
+import { getcellvalue, datagridgrowth, getcellFormula } from '../global/getdata';
 import { setcellvalue } from '../global/setdata';
 import luckysheetcreatedom from '../global/createdom';
 import tooltip from '../global/tooltip';
@@ -11,7 +11,7 @@ import editor from '../global/editor';
 import { luckysheetextendtable, luckysheetdeletetable } from '../global/extend';
 import { isRealNum } from '../global/validate';
 import { replaceHtml, getObjType, chatatABC, arrayRemoveItem } from '../utils/util';
-import { sheetHTML,luckysheetlodingHTML } from './constant';
+import { sheetHTML, luckysheetlodingHTML } from './constant';
 import server from './server';
 import luckysheetConfigsetting from './luckysheetConfigsetting';
 import pivotTable from './pivotTable';
@@ -26,14 +26,14 @@ import { selectHightlightShow, selectionCopyShow } from './select';
 import Store from '../store';
 import locale from '../locale/locale';
 import { renderChartShow } from '../expendPlugins/chart/plugin';
-import {changeSheetContainerSize, menuToolBarWidth} from './resize';
-import {zoomNumberDomBind} from './zoom';
+import { changeSheetContainerSize, menuToolBarWidth } from './resize';
+import { zoomNumberDomBind } from './zoom';
 import menuButton from './menuButton';
 import method from '../global/method';
 
 const sheetmanage = {
-    generateRandomSheetIndex: function(prefix) {
-        if(prefix == null){
+    generateRandomSheetIndex: function (prefix) {
+        if (prefix == null) {
             prefix = "Sheet";
         }
 
@@ -41,7 +41,7 @@ const sheetmanage = {
 
         let mid = "";
 
-        for(let i = 0; i < 12; i++){
+        for (let i = 0; i < 12; i++) {
             mid += userAgent[Math.round(Math.random() * (userAgent.length - 1))];
         }
 
@@ -49,130 +49,130 @@ const sheetmanage = {
 
         return prefix + "_" + mid + "_" + time;
     },
-    generateRandomSheetName: function(file, isPivotTable) {
+    generateRandomSheetName: function (file, isPivotTable) {
         let index = file.length;
 
         const locale_pivotTable = locale().pivotTable;
         const title = locale_pivotTable.title;
 
-        for(let i = 0; i < file.length; i++){
-            if(file[i].name.indexOf("Sheet") > -1 || file[i].name.indexOf(title) > -1){
+        for (let i = 0; i < file.length; i++) {
+            if (file[i].name.indexOf("Sheet") > -1 || file[i].name.indexOf(title) > -1) {
                 let suffix = parseFloat(file[i].name.replace("Sheet", "").replace(title, ""));
 
-                if(suffix != "NaN" && Math.ceil(suffix) > index){
+                if (suffix != "NaN" && Math.ceil(suffix) > index) {
                     index = Math.ceil(suffix);
                 }
             }
         }
 
-        if(isPivotTable){
+        if (isPivotTable) {
             return title + (index + 1);
         }
-        else{
+        else {
             return "Sheet" + (index + 1);
         }
     },
-    generateCopySheetName: function(file, name) {
+    generateCopySheetName: function (file, name) {
         let copySheetName = "";
 
         let _locale = locale();
         let locale_info = _locale.info;
 
-        if(name.toString().indexOf("("+locale_info.copy) > -1){
-            let copy_i = name.toString().indexOf("("+locale_info.copy);
-            let name2 = name.toString().substring(0, copy_i) + "("+locale_info.copy;
+        if (name.toString().indexOf("(" + locale_info.copy) > -1) {
+            let copy_i = name.toString().indexOf("(" + locale_info.copy);
+            let name2 = name.toString().substring(0, copy_i) + "(" + locale_info.copy;
             let index = null;
 
-            for(let i = 0; i < file.length; i++){
+            for (let i = 0; i < file.length; i++) {
                 let fileName = file[i].name.toString();
                 let st_i = fileName.indexOf(name2);
 
-                if(st_i > -1){
+                if (st_i > -1) {
                     let ed_i = fileName.indexOf(")", st_i + name2.length);
                     let num = fileName.substring(st_i + name2.length, ed_i);
 
-                    if(isRealNum(num)){
-                        if(index == null || parseInt(num) > index){
+                    if (isRealNum(num)) {
+                        if (index == null || parseInt(num) > index) {
                             index = parseInt(num);
                         }
                     }
                 }
             }
 
-            if(index == null){
+            if (index == null) {
                 copySheetName = name2 + "2)";
             }
-            else{
+            else {
                 index++;
                 copySheetName = name2 + index + ")";
             }
         }
-        else{
+        else {
             let index = null;
             let hascopy = false;
-            let name2 = name + "("+locale_info.copy;
+            let name2 = name + "(" + locale_info.copy;
 
-            for(let i = 0; i < file.length; i++){
+            for (let i = 0; i < file.length; i++) {
                 let fileName = file[i].name.toString();
                 let st_i = fileName.indexOf(name2);
 
-                if(st_i > -1){
+                if (st_i > -1) {
                     hascopy = true;
                     let ed_i = fileName.indexOf(")", st_i + name2.length);
                     let num = fileName.substring(st_i + name2.length, ed_i);
 
-                    if(isRealNum(num)){
-                        if(index == null || parseInt(num) > index){
+                    if (isRealNum(num)) {
+                        if (index == null || parseInt(num) > index) {
                             index = parseInt(num);
                         }
                     }
                 }
             }
 
-            if(hascopy){
-                if(index == null){
-                    copySheetName = name + "("+ locale_info.copy +"2)";
+            if (hascopy) {
+                if (index == null) {
+                    copySheetName = name + "(" + locale_info.copy + "2)";
                 }
-                else{
+                else {
                     index++;
-                    copySheetName = name + "("+ locale_info.copy +"" + index + ")";
+                    copySheetName = name + "(" + locale_info.copy + "" + index + ")";
                 }
             }
-            else{
-                copySheetName = name + "("+ locale_info.copy +")";
+            else {
+                copySheetName = name + "(" + locale_info.copy + ")";
             }
         }
 
         return copySheetName;
     },
-    getSheetByIndex: function(index) {
+    getSheetByIndex: function (index) {
         let _this = this;
 
-        if(index == null){
+        if (index == null) {
             index = Store.currentSheetIndex;
         }
 
         let i = _this.getSheetIndex(index);
-        
+
         return Store.luckysheetfile[i];
     },
-    getSheetByName: function(name) {
+    getSheetByName: function (name) {
         let _this = this;
 
-        if(name == null){
+        if (name == null) {
             return null;
         }
 
-        for(let i=0;i<Store.luckysheetfile.length;i++){
+        for (let i = 0; i < Store.luckysheetfile.length; i++) {
             let file = Store.luckysheetfile[i];
-            if(file.name==name){
+            if (file.name == name) {
                 return file;
             }
         }
-        
+
         return null;
     },
-    getCurSheetnoset: function() {
+    getCurSheetnoset: function () {
         let curindex = 0;
 
         for (let i = 0; i < Store.luckysheetfile.length; i++) {
@@ -184,7 +184,7 @@ const sheetmanage = {
 
         return curindex;
     },
-    getCurSheet: function() {
+    getCurSheet: function () {
         if (Store.luckysheetfile.length) {
             let hasActive = false, indexs = []
             Store.luckysheetfile.forEach(item => {
@@ -193,7 +193,7 @@ const sheetmanage = {
                 }
                 if (indexs.includes(item.index)) {
                     item.index = this.generateRandomSheetIndex()
-                }else {
+                } else {
                     indexs.push(item.index)
                 }
 
@@ -203,7 +203,7 @@ const sheetmanage = {
                 if (item.status == 1) {
                     if (hasActive) {
                         item.status = 0
-                    }else {
+                    } else {
                         hasActive = true
                     }
                 }
@@ -220,16 +220,16 @@ const sheetmanage = {
                 break;
             }
         }
-        
+
         return Store.currentSheetIndex;
     },
-    addNewSheet: function(e, isPivotTable) {
-        if(isEditMode() || Store.allowEdit===false){
+    addNewSheet: function (e, isPivotTable) {
+        if (isEditMode() || Store.allowEdit === false) {
             // alert("非编辑模式下不允许该操作！");
             return;
         }
         // 钩子 sheetCreateBefore
-        if(!method.createHookFunction('sheetCreateBefore')){
+        if (!method.createHookFunction('sheetCreateBefore')) {
             return;
         }
 
@@ -239,21 +239,21 @@ const sheetmanage = {
         let index = _this.generateRandomSheetIndex();
 
         let sheetname = _this.generateRandomSheetName(Store.luckysheetfile, isPivotTable);
-        
-        $("#luckysheet-sheet-container-c").append(replaceHtml(sheetHTML, { "index": index, "active": "", "name": sheetname, "style": "","colorset":"" }));
 
-        let sheetconfig = { 
-            "name": sheetname, 
-            "color": "", 
-            "status": "0", 
-            "order": order, 
-            "index": index, 
-            "celldata": [], 
-            "row": Store.defaultrowNum, 
-            "column": Store.defaultcolumnNum, 
-            "config": {}, 
-            "pivotTable": null, 
-            "isPivotTable": !!isPivotTable 
+        $("#luckysheet-sheet-container-c").append(replaceHtml(sheetHTML, { "index": index, "active": "", "name": sheetname, "style": "", "colorset": "" }));
+
+        let sheetconfig = {
+            "name": sheetname,
+            "color": "",
+            "status": "0",
+            "order": order,
+            "index": index,
+            "celldata": [],
+            "row": Store.defaultrowNum,
+            "column": Store.defaultcolumnNum,
+            "config": {},
+            "pivotTable": null,
+            "isPivotTable": !!isPivotTable
         };
         Store.luckysheetfile.push(sheetconfig);
 
@@ -265,7 +265,7 @@ const sheetmanage = {
         server.saveParam("sha", null, $.extend(true, {}, sheetconfig));
 
         if (Store.clearjfundo) {
-            Store.jfundo.length  = 0;
+            Store.jfundo.length = 0;
             let redo = {};
             redo["type"] = "addSheet";
             redo["sheetconfig"] = $.extend(true, {}, sheetconfig);
@@ -278,22 +278,22 @@ const sheetmanage = {
 
         // 钩子 sheetCreateAfter 不应该在这里 应在绘制完成后 因此在 changeSheet 实现
     },
-    setSheetHide: function(index, isDelete) {
+    setSheetHide: function (index, isDelete) {
         let _this = this;
         let currentIdx = _this.getSheetIndex(index);
         // 钩子 sheetHideBefore
-        if(!isDelete && !method.createHookFunction('sheetHideBefore', {sheet: Store.luckysheetfile[currentIdx]})){
+        if (!isDelete && !method.createHookFunction('sheetHideBefore', { sheet: Store.luckysheetfile[currentIdx] })) {
             return;
         }
         Store.luckysheetfile[currentIdx].hide = 1;
-        
+
         let luckysheetcurrentSheetitem = $("#luckysheet-sheets-item" + index);
         luckysheetcurrentSheetitem.hide();
 
         $("#luckysheet-sheet-area div.luckysheet-sheets-item").removeClass("luckysheet-sheets-item-active");
-        
+
         let indicator;
-        if(luckysheetConfigsetting.showsheetbarConfig.sheet){
+        if (luckysheetConfigsetting.showsheetbarConfig.sheet) {
             indicator = luckysheetcurrentSheetitem.nextAll(":visible");
             if (luckysheetcurrentSheetitem.nextAll(":visible").length > 0) {
                 indicator = indicator.eq(0).data("index");
@@ -301,55 +301,55 @@ const sheetmanage = {
             else {
                 indicator = luckysheetcurrentSheetitem.prevAll(":visible").eq(0).data("index");
             }
-        }else{
-            let  nextActiveIdx , showSheetIdxs = [];
-            Store.luckysheetfile.forEach((ele,index)=>{
-                if(1 !== ele.hide) showSheetIdxs.push(index);
+        } else {
+            let nextActiveIdx, showSheetIdxs = [];
+            Store.luckysheetfile.forEach((ele, index) => {
+                if (1 !== ele.hide) showSheetIdxs.push(index);
             });
             let len = showSheetIdxs.length;
-            if(1 === len){
+            if (1 === len) {
                 nextActiveIdx = showSheetIdxs[0];
-            }else{
-                nextActiveIdx = showSheetIdxs[len-1] > currentIdx ? showSheetIdxs.find(e => e>currentIdx ) : showSheetIdxs[len-1];
+            } else {
+                nextActiveIdx = showSheetIdxs[len - 1] > currentIdx ? showSheetIdxs.find(e => e > currentIdx) : showSheetIdxs[len - 1];
             }
 
             indicator = Store.luckysheetfile[nextActiveIdx].index;
         }
-        
+
         $("#luckysheet-sheets-item" + indicator).addClass("luckysheet-sheets-item-active");
-        
+
         _this.changeSheetExec(indicator);
         _this.locationSheet();
 
         server.saveParam("sh", luckysheetcurrentSheetitem.data("index"), 1, { "op": "hide", "cur": indicator });
         // 钩子 sheetHideAfter
         if (!isDelete) {
-            method.createHookFunction('sheetHideAfter', {sheet: Store.luckysheetfile[currentIdx]});
+            method.createHookFunction('sheetHideAfter', { sheet: Store.luckysheetfile[currentIdx] });
         }
     },
-    setSheetShow: function(index) {
+    setSheetShow: function (index) {
         let _this = this;
         const file = Store.luckysheetfile[_this.getSheetIndex(index)]
         // 钩子 sheetShowBefore
-        if(!method.createHookFunction('sheetShowBefore', {sheet: file})){
+        if (!method.createHookFunction('sheetShowBefore', { sheet: file })) {
             return;
         }
         file.hide = 0;
         _this.changeSheetExec(index);
 
-        server.saveParam("sh", index, 0, {"op": "show", "cur": null});
+        server.saveParam("sh", index, 0, { "op": "show", "cur": null });
         // 钩子 sheetShowAfter
-        method.createHookFunction('sheetShowAfter', {sheet: file});
+        method.createHookFunction('sheetShowAfter', { sheet: file });
     },
     sheetMaxIndex: 0,
-    ordersheet: function(property) {
+    ordersheet: function (property) {
         return function (a, b) {
             let value1 = a[property];
             let value2 = b[property];
             return value1 - value2;
         }
     },
-    getCurrentOrder: function() {
+    getCurrentOrder: function () {
         let orders = {};
 
         $("#luckysheet-sheet-area div.luckysheet-sheets-item").each(function (a) {
@@ -365,7 +365,7 @@ const sheetmanage = {
 
         return orders;
     },
-    reOrderAllSheet: function() {
+    reOrderAllSheet: function () {
         let orders = {};
 
         $("#luckysheet-sheet-area div.luckysheet-sheets-item").each(function (a) {
@@ -385,22 +385,22 @@ const sheetmanage = {
         Store.luckysheetfile.sort((x, y) => {
             let order_x = x.order;
             let order_y = y.order;
-    
-            if(order_x != null && order_y != null){
+
+            if (order_x != null && order_y != null) {
                 return order_x - order_y;
             }
-            else if(order_x != null){
+            else if (order_x != null) {
                 return -1;
             }
-            else if(order_y != null){
+            else if (order_y != null) {
                 return 1;
             }
-            else{
+            else {
                 return 1;
             }
         })
     },
-    createSheet: function() { //修复拖动sheet更新后台后，重新打开显示错误
+    createSheet: function () { //修复拖动sheet更新后台后，重新打开显示错误
         let _this = this;
 
         let btn = [];
@@ -411,19 +411,19 @@ const sheetmanage = {
             let sheetIndex = Store.luckysheetfile[i].index;
 
             let colorset = '';
-            if(Store.luckysheetfile[i].color != null){
+            if (Store.luckysheetfile[i].color != null) {
                 colorset = '<div class="luckysheet-sheets-item-color" style=" position: absolute; width: 100%; height: 3px; bottom: 0px; left: 0px; background-color: ' + Store.luckysheetfile[i].color + ';"></div>';
             }
 
             if (Store.currentSheetIndex == sheetIndex) { //使用Store.luckysheetfile中的index比较，而不是order
-                btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "luckysheet-sheets-item-active", "name": Store.luckysheetfile[i].name, "style": "","colorset":colorset }));
+                btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "luckysheet-sheets-item-active", "name": Store.luckysheetfile[i].name, "style": "", "colorset": colorset }));
             }
             else {
                 if (Store.luckysheetfile[i].hide == 1) {
-                    btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "", "name": Store.luckysheetfile[i].name, "style": "display:none;","colorset":colorset }));
+                    btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "", "name": Store.luckysheetfile[i].name, "style": "display:none;", "colorset": colorset }));
                 }
                 else {
-                    btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "", "name": Store.luckysheetfile[i].name, "style": "","colorset":colorset }));
+                    btn.push(replaceHtml(sheetHTML, { "index": sheetIndex, "active": "", "name": Store.luckysheetfile[i].name, "style": "", "colorset": colorset }));
                 }
                 display = "style='display:none;'";
             }
@@ -440,24 +440,24 @@ const sheetmanage = {
         _this.locationSheet();
     },
     // *控制sheet栏的左右滚动按钮是否显示
-    locationSheet: function() {
-        let $c = $("#luckysheet-sheet-container-c"), winW = $("#"+Store.container).width();
+    locationSheet: function () {
+        let $c = $("#luckysheet-sheet-container-c"), winW = $("#" + Store.container).width();
         let $cursheet = $("#luckysheet-sheet-container-c > div.luckysheet-sheets-item-active").eq(0);
 
         let scrollLeftpx = 0;
         let c_width = 0;
 
-        $("#luckysheet-sheet-container-c > div.luckysheet-sheets-item:visible").each(function(){
-            if($(this).hasClass("luckysheet-sheets-item-active")){
+        $("#luckysheet-sheet-container-c > div.luckysheet-sheets-item:visible").each(function () {
+            if ($(this).hasClass("luckysheet-sheets-item-active")) {
                 scrollLeftpx = c_width;
             }
             c_width += $(this).outerWidth();
         });
-        
-        setTimeout(function(){
+
+        setTimeout(function () {
             $c.scrollLeft(scrollLeftpx - 10);
 
-            if (luckysheetConfigsetting.showsheetbarConfig.sheet){
+            if (luckysheetConfigsetting.showsheetbarConfig.sheet) {
                 if (c_width >= winW * 0.7) {
                     $("#luckysheet-sheet-area .luckysheet-sheets-scroll").css("display", "inline-block");
                     $("#luckysheet-sheet-container .docs-sheet-fade-left").show();
@@ -469,8 +469,8 @@ const sheetmanage = {
 
         }, 1)
     },
-    copySheet: function(copyindex, e) {
-        if(isEditMode() || Store.allowEdit===false){
+    copySheet: function (copyindex, e) {
+        if (isEditMode() || Store.allowEdit === false) {
             // alert("非编辑模式下不允许该操作！");
             return;
         }
@@ -479,7 +479,7 @@ const sheetmanage = {
 
         let order = Store.luckysheetfile.length;
         let index = _this.generateRandomSheetIndex();
-        
+
         let copyarrindex = _this.getSheetIndex(copyindex);
         let copyjson = $.extend(true, {}, Store.luckysheetfile[copyarrindex]);
         copyjson.order = order;
@@ -487,15 +487,15 @@ const sheetmanage = {
         copyjson.name = _this.generateCopySheetName(Store.luckysheetfile, copyjson.name);
 
         // 钩子 sheetCreateBefore
-        if(!method.createHookFunction('sheetCopyBefore', {
+        if (!method.createHookFunction('sheetCopyBefore', {
             targetSheet: Store.luckysheetfile[copyarrindex],
             copySheet: copyjson
-        })){
+        })) {
             return;
         }
-        
+
         let colorset = '';
-        if(copyjson.color != null){
+        if (copyjson.color != null) {
             colorset = '<div class="luckysheet-sheets-item-color" style=" position: absolute; width: 100%; height: 3px; bottom: 0px; left: 0px; background-color: ' + copyjson.color + ';"></div>';
         }
 
@@ -515,11 +515,11 @@ const sheetmanage = {
         _this.reOrderAllSheet();
 
         if (Store.clearjfundo) {
-            Store.jfredo.push({ 
-                "type": "copySheet", 
-                "copyindex": copyindex, 
-                "index": copyjson.index, 
-                "sheetIndex": copyjson.index 
+            Store.jfredo.push({
+                "type": "copySheet",
+                "copyindex": copyindex,
+                "index": copyjson.index,
+                "sheetIndex": copyjson.index
             });
         }
         else if (Store.jfredo.length > 0) {
@@ -531,13 +531,13 @@ const sheetmanage = {
             }
         }
     },
-    hasSheet: function(index) {
+    hasSheet: function (index) {
         if (index == null) {
             return false;
         }
 
         index = this.getSheetIndex(index);
-        
+
         if (index == null) {
             return false;
         }
@@ -545,27 +545,27 @@ const sheetmanage = {
             return true;
         }
     },
-    createSheetbydata: function(data, isrenew, isBefore=true) {
+    createSheetbydata: function (data, isrenew, isBefore = true) {
         let _this = this;
 
         let colorset = '';
-        if(data.color != null){
+        if (data.color != null) {
             colorset = '<div class="luckysheet-sheets-item-color" style=" position: absolute; width: 100%; height: 3px; bottom: 0px; left: 0px; background-color: ' + data.color + ';"></div>';
         }
 
         $("#luckysheet-sheet-container-c").append(replaceHtml(sheetHTML, { "index": data.index, "active": "", "name": data.name, "order": data.order, "style": "", "colorset": colorset }));
 
-        if(isBefore){
+        if (isBefore) {
             let previndex = data.order;
-            if(previndex >= Store.luckysheetfile.length){
+            if (previndex >= Store.luckysheetfile.length) {
                 previndex = Store.luckysheetfile.length - 1;
                 $("#luckysheet-sheets-item" + data.index).insertAfter($("#luckysheet-sheets-item" + Store.luckysheetfile[previndex].index));
             }
-            else{
+            else {
                 $("#luckysheet-sheets-item" + data.index).insertBefore($("#luckysheet-sheets-item" + Store.luckysheetfile[previndex].index));
             }
         }
-        
+
         Store.luckysheetfile.push(data);
 
         $("#luckysheet-sheet-area div.luckysheet-sheets-item").removeClass("luckysheet-sheets-item-active");
@@ -573,22 +573,22 @@ const sheetmanage = {
         $("#luckysheet-cell-main").append('<div id="luckysheet-datavisual-selection-set-' + data.index + '" class="luckysheet-datavisual-selection-set"></div>');
         cleargridelement();
 
-        if(isrenew != null){
+        if (isrenew != null) {
             server.saveParam("shre", null, { "reIndex": data.index });
             data.hide = 0;
-            server.saveParam("sh", data.index, 0, {"op": "show", "cur": null});
+            server.saveParam("sh", data.index, 0, { "op": "show", "cur": null });
         }
-        else{
+        else {
             server.saveParam("sha", null, data);
         }
 
         _this.changeSheetExec(data.index, data.isPivotTable, true);
         _this.reOrderAllSheet();
     },
-    deleteSheet: function(index) {
+    deleteSheet: function (index) {
         let _this = this;
 
-        if(Store.allowEdit===false){
+        if (Store.allowEdit === false) {
             return;
         }
 
@@ -597,7 +597,7 @@ const sheetmanage = {
         const file = Store.luckysheetfile[arrIndex];
 
         // 钩子 sheetDeleteBefore
-        if(!method.createHookFunction('sheetDeleteBefore', { sheet: file })){
+        if (!method.createHookFunction('sheetDeleteBefore', { sheet: file })) {
             return;
         }
 
@@ -605,11 +605,11 @@ const sheetmanage = {
 
         $("#luckysheet-sheets-item" + index).remove();
         $("#luckysheet-datavisual-selection-set-" + index).remove();
-        
+
         let removedsheet = Store.luckysheetfile.splice(arrIndex, 1);
         _this.reOrderAllSheet();
 
-        server.saveParam("shd", null, {"deleIndex": index });
+        server.saveParam("shd", null, { "deleIndex": index });
 
         if (Store.clearjfundo) {
             removedsheet[0].type = "deleteSheet";
@@ -619,24 +619,24 @@ const sheetmanage = {
         method.createHookFunction('sheetDeleteAfter', { sheet: file });
     },
     nulldata: null,
-    getGridData: function(d) {
+    getGridData: function (d) {
         let ret = [];
 
-        for(let r = 0; r < d.length; r++){
-            for(let c = 0; c < d[0].length; c++){
-                if(d[r][c] == null){
+        for (let r = 0; r < d.length; r++) {
+            for (let c = 0; c < d[0].length; c++) {
+                if (d[r][c] == null) {
                     continue;
                 }
 
-                ret.push({r:r, c:c, v:d[r][c]});
+                ret.push({ r: r, c: c, v: d[r][c] });
             }
         }
 
         return ret;
     },
-    buildGridData: function(file) {
+    buildGridData: function (file) {
         // 如果已经存在二维数据data,那么直接返回data；如果只有celldata，那么就转化成二维数组data，再返回
-        let row = file.row == null ? Store.defaultrowNum : file.row, 
+        let row = file.row == null ? Store.defaultrowNum : file.row,
             column = file.column == null ? Store.defaultcolumnNum : file.column,
             data = file.data && file.data.length > 0 ? file.data : datagridgrowth([], row, column),
             celldata = file.celldata;
@@ -647,17 +647,17 @@ const sheetmanage = {
                 }
             }
         } else {
-            if(celldata && celldata.length > 0){
-                for(let i = 0; i < celldata.length; i++){
+            if (celldata && celldata.length > 0) {
+                for (let i = 0; i < celldata.length; i++) {
                     let item = celldata[i];
                     let r = item.r;
                     let c = item.c;
                     let v = item.v;
-    
-                    if(r >= data.length){
+
+                    if (r >= data.length) {
                         data = datagridgrowth(data, r - data.length + 1, 0);
                     }
-                    if(c >= data[0].length){
+                    if (c >= data[0].length) {
                         data = datagridgrowth(data, 0, c - data[0].length + 1);
                     }
                     setcellvalue(r, c, data, v);
@@ -666,72 +666,72 @@ const sheetmanage = {
         }
 
         //亿万格式+精确度 恢复全局初始化
-        luckysheetConfigsetting.autoFormatw = false;  
+        luckysheetConfigsetting.autoFormatw = false;
         luckysheetConfigsetting.accuracy = undefined;
         return data;
     },
-    cutGridData: function(d) {
+    cutGridData: function (d) {
         let rowindex = 0;
 
-        for(let r = d.length - 1; r >= 0; r--){
+        for (let r = d.length - 1; r >= 0; r--) {
             let isnull = true;
-            
-            for(let c = 0; c < d[0].length; c++){
+
+            for (let c = 0; c < d[0].length; c++) {
                 let value = getcellvalue(r, c);
-                
-                if(value != null && $.trim(value).length > 0){
+
+                if (value != null && $.trim(value).length > 0) {
                     isnull = false;
                     break;
                 }
             }
 
-            if(!isnull){
+            if (!isnull) {
                 break;
             }
-            else{
+            else {
                 rowindex = r;
             }
         }
 
         return d.slice(0, rowindex);
     },
-    addGridData: function(celldata, row, column) {
+    addGridData: function (celldata, row, column) {
         let data = datagridgrowth([], row, column);
-        
-        if(celldata != null){
-            for(let i = 0; i < celldata.length; i++){
+
+        if (celldata != null) {
+            for (let i = 0; i < celldata.length; i++) {
                 let item = celldata[i];
                 let r = item.r;
                 let c = item.c;
                 let v = item.v;
 
-                if(r >= data.length){
+                if (r >= data.length) {
                     data = datagridgrowth(data, r - data.length + 1, 0);
                 }
 
-                if(c >= data[0].length){
+                if (c >= data[0].length) {
                     data = datagridgrowth(data, 0, c - data[0].length + 1);
                 }
 
                 setcellvalue(r, c, data, v)
             }
         }
-        
+
         return data;
     },
-    sheetParamRestore: function(file, data) {
+    sheetParamRestore: function (file, data) {
         Store.luckysheet_select_save = file["luckysheet_select_save"];
-        if(Store.luckysheet_select_save == null || Store.luckysheet_select_save.length == 0){
-            if(data[0] != null && data[0][0] != null && data[0][0].mc != null){
-                Store.luckysheet_select_save = [{ 
-                    "row": [0, data[0][0].mc.rs - 1], 
-                    "column": [0, data[0][0].mc.cs - 1] 
+        if (Store.luckysheet_select_save == null || Store.luckysheet_select_save.length == 0) {
+            if (data[0] != null && data[0][0] != null && data[0][0].mc != null) {
+                Store.luckysheet_select_save = [{
+                    "row": [0, data[0][0].mc.rs - 1],
+                    "column": [0, data[0][0].mc.cs - 1]
                 }];
             }
-            else{
-                Store.luckysheet_select_save = [{ 
-                    "row": [0, 0], 
-                    "column": [0, 0] 
+            else {
+                Store.luckysheet_select_save = [{
+                    "row": [0, 0],
+                    "column": [0, 0]
                 }];
             }
         }
@@ -741,34 +741,34 @@ const sheetmanage = {
 
         Store.zoomRatio = file["zoomRatio"] == null ? 1 : file["zoomRatio"];
 
-        if(file["defaultRowHeight"]!=null){
+        if (file["defaultRowHeight"] != null) {
             Store.defaultrowlen = parseFloat(file["defaultRowHeight"]);
         }
-        else{
+        else {
             Store.defaultrowlen = luckysheetConfigsetting["defaultRowHeight"];
         }
 
-        if(file["defaultColWidth"]!=null){
+        if (file["defaultColWidth"] != null) {
             Store.defaultcollen = parseFloat(file["defaultColWidth"]);
         }
-        else{
+        else {
             Store.defaultcollen = luckysheetConfigsetting["defaultColWidth"];
         }
 
-        if(file["showGridLines"]!=null){
+        if (file["showGridLines"] != null) {
             let showGridLines = file["showGridLines"];
-            if(showGridLines==0 || showGridLines==false){
+            if (showGridLines == 0 || showGridLines == false) {
                 Store.showGridLines = false;
             }
-            else{
+            else {
                 Store.showGridLines = true;
             }
         }
-        else{
+        else {
             Store.showGridLines = true;
         }
     },
-    initialjfFile: function(menu, title) {
+    initialjfFile: function (menu, title) {
         let _this = this;
 
         _this.getCurSheet();
@@ -779,21 +779,21 @@ const sheetmanage = {
         //初始化的时候 记录选区
         let select_save = [];
         file.jfgird_select_save = file.jfgird_select_save || [];
-        file.jfgird_select_save.forEach(item=>select_save.push({"row":item.row,"column":item.column}));
+        file.jfgird_select_save.forEach(item => select_save.push({ "row": item.row, "column": item.column }));
         file.luckysheet_select_save = select_save;
-        
+
         this.sheetParamRestore(file, data);
 
-        let r2 = Store.luckysheet_select_save[0].row[1], 
+        let r2 = Store.luckysheet_select_save[0].row[1],
             c2 = Store.luckysheet_select_save[0].column[1];
-        
-        if(Store.luckysheet_select_save.length > 1){
-            for(let i = 0; i < Store.luckysheet_select_save.length; i++){
-                if(Store.luckysheet_select_save[i].row[1] > r2){
+
+        if (Store.luckysheet_select_save.length > 1) {
+            for (let i = 0; i < Store.luckysheet_select_save.length; i++) {
+                if (Store.luckysheet_select_save[i].row[1] > r2) {
                     r2 = Store.luckysheet_select_save[i].row[1];
                 }
 
-                if(Store.luckysheet_select_save[i].column[1] > c2){
+                if (Store.luckysheet_select_save[i].column[1] > c2) {
                     c2 = Store.luckysheet_select_save[i].column[1];
                 }
             }
@@ -804,21 +804,21 @@ const sheetmanage = {
         file.data = data;
 
         let rowheight = data.length;
-        if(r2 > rowheight - 1){
+        if (r2 > rowheight - 1) {
             rowheight = r2 + 1;
         }
 
         let colwidth = data[0].length;
-        if(c2 > colwidth - 1){
+        if (c2 > colwidth - 1) {
             colwidth = c2 + 1;
         }
 
         //钩子函数 表格创建之前触发
-        if(typeof luckysheetConfigsetting.beforeCreateDom == "function" ){
+        if (typeof luckysheetConfigsetting.beforeCreateDom == "function") {
             luckysheetConfigsetting.beforeCreateDom(luckysheet);
         }
 
-        if(typeof luckysheetConfigsetting.workbookCreateBefore == "function"){
+        if (typeof luckysheetConfigsetting.workbookCreateBefore == "function") {
             luckysheetConfigsetting.workbookCreateBefore(luckysheet);
         }
 
@@ -827,30 +827,30 @@ const sheetmanage = {
         luckysheetcreatedom(colwidth, rowheight, data, menu, title);
 
         setTimeout(function () {
-            tooltip.createHoverTip("#luckysheet_info_detail" ,".luckysheet_info_detail_back, .luckysheet_info_detail_input, .luckysheet_info_detail_update");
-            tooltip.createHoverTip("#luckysheet-wa-editor" ,".luckysheet-toolbar-menu-button, .luckysheet-toolbar-button, .luckysheet-toolbar-combo-button");
+            tooltip.createHoverTip("#luckysheet_info_detail", ".luckysheet_info_detail_back, .luckysheet_info_detail_input, .luckysheet_info_detail_update");
+            tooltip.createHoverTip("#luckysheet-wa-editor", ".luckysheet-toolbar-menu-button, .luckysheet-toolbar-button, .luckysheet-toolbar-combo-button");
 
             Store.luckysheetTableContentHW = [
-                $("#luckysheet-cell-main").width() + Store.rowHeaderWidth - Store.cellMainSrollBarSize, 
+                $("#luckysheet-cell-main").width() + Store.rowHeaderWidth - Store.cellMainSrollBarSize,
                 $("#luckysheet-cell-main").height() + Store.columnHeaderHeight - Store.cellMainSrollBarSize
             ];
-            $("#luckysheetTableContent, #luckysheetTableContentF").attr({ 
-                width: Math.ceil(Store.luckysheetTableContentHW[0] * Store.devicePixelRatio), 
-                height: Math.ceil(Store.luckysheetTableContentHW[1] * Store.devicePixelRatio) 
-            }).css({ 
-                width: Store.luckysheetTableContentHW[0], 
-                height: Store.luckysheetTableContentHW[1] 
+            $("#luckysheetTableContent, #luckysheetTableContentF").attr({
+                width: Math.ceil(Store.luckysheetTableContentHW[0] * Store.devicePixelRatio),
+                height: Math.ceil(Store.luckysheetTableContentHW[1] * Store.devicePixelRatio)
+            }).css({
+                width: Store.luckysheetTableContentHW[0],
+                height: Store.luckysheetTableContentHW[1]
             }).get(0).getContext("2d");
             let locale_info = locale().info;
             let key = server.gridKey;
             let cahce_key = key + "__qkcache";
 
-            let ini = function(){
+            let ini = function () {
                 file["load"] = "1";
 
                 _this.createSheet();
 
-                let execF = function(){
+                let execF = function () {
                     _this.mergeCalculation(file["index"]);
                     _this.setSheetParam(false);
                     // editor.webWorkerFlowDataCache(Store.flowdata);//worker存数据
@@ -860,7 +860,7 @@ const sheetmanage = {
                     _this.restoreCache();
                     formula.execFunctionGroupForce(luckysheetConfigsetting.forceCalculation);
                     _this.restoreSheetAll(Store.currentSheetIndex);
-                    
+
                     // luckysheetrefreshgrid(0, 0);
                     $("#luckysheet_info_detail_save").html(locale_info.detailSave);
 
@@ -879,17 +879,17 @@ const sheetmanage = {
                     luckysheetsizeauto();
 
                     //等待滚动条dom宽高加载完成后 初始化滚动位置
-                    if(file["scrollLeft"] != null && file["scrollLeft"] > 0){
+                    if (file["scrollLeft"] != null && file["scrollLeft"] > 0) {
                         $("#luckysheet-scrollbar-x").scrollLeft(file["scrollLeft"]);
                     }
-                    else{
+                    else {
                         $("#luckysheet-scrollbar-x").scrollLeft(0);
                     }
-            
-                    if(file["scrollTop"] != null && file["scrollTop"] > 0){
+
+                    if (file["scrollTop"] != null && file["scrollTop"] > 0) {
                         $("#luckysheet-scrollbar-y").scrollTop(file["scrollTop"]);
                     }
-                    else{
+                    else {
                         $("#luckysheet-scrollbar-y").scrollTop(0);
                     }
 
@@ -903,26 +903,26 @@ const sheetmanage = {
                     //     luckysheetConfigsetting.workbookCreateBefore(luckysheet);
                     // }
 
-                    arrayRemoveItem(Store.asyncLoad,'core');
+                    arrayRemoveItem(Store.asyncLoad, 'core');
 
-                    if(luckysheetConfigsetting.pointEdit){
-                        setTimeout(function(){
+                    if (luckysheetConfigsetting.pointEdit) {
+                        setTimeout(function () {
                             Store.loadingObj.close()
                         }, 0);
                     }
-                    else{
-                        setTimeout(function(){
+                    else {
+                        setTimeout(function () {
                             Store.loadingObj.close()
                         }, 500);
                     }
                 }
 
                 let loadSheetUrl = server.loadSheetUrl;
-                
-                if(loadSheetUrl == ""){
-                //     execF();
-                // }
-                // else if(sheetindex.length>0 && loadSheetUrl == ""){
+
+                if (loadSheetUrl == "") {
+                    //     execF();
+                    // }
+                    // else if(sheetindex.length>0 && loadSheetUrl == ""){
                     // for(let i = 0;i<Store.luckysheetfile.length;i++){
                     //     let otherfile = Store.luckysheetfile[i];
                     //     if(otherfile.index == file.index){
@@ -938,36 +938,36 @@ const sheetmanage = {
                     _this.loadOtherFile(file);
                     execF();
                 }
-                else{
+                else {
                     let sheetindexset = _this.checkLoadSheetIndex(file);
                     let sheetindex = [];
-    
-                    for(let i = 0; i < sheetindexset.length; i++){
+
+                    for (let i = 0; i < sheetindexset.length; i++) {
                         let item = sheetindexset[i];
-    
-                        if(item == file["index"]){
+
+                        if (item == file["index"]) {
                             continue;
                         }
-    
+
                         sheetindex.push(item);
                     }
 
                     // No request is sent if it is not linked to other worksheets
-                    if(sheetindex.length === 0){
+                    if (sheetindex.length === 0) {
                         execF();
                         return;
                     }
-                    $.post(loadSheetUrl, {"gridKey" : server.gridKey, "index": sheetindex.join(",")}, function (d) {
+                    $.post(loadSheetUrl, { "gridKey": server.gridKey, "index": sheetindex.join(",") }, function (d) {
                         let dataset = new Function("return " + d)();
-                        
-                        for(let item in dataset){
-                            if(item == file["index"]){
+
+                        for (let item in dataset) {
+                            if (item == file["index"]) {
                                 continue;
                             }
 
                             let otherfile = Store.luckysheetfile[_this.getSheetIndex(item)];
-                            
-                            if(otherfile["load"] == null || otherfile["load"] == "0"){
+
+                            if (otherfile["load"] == null || otherfile["load"] == "0") {
                                 otherfile.celldata = dataset[item.toString()];
                                 otherfile["data"] = _this.buildGridData(otherfile);
                                 otherfile["load"] = "1";
@@ -980,21 +980,21 @@ const sheetmanage = {
             }
 
             try {
-                localforage.getItem(cahce_key).then(function(readValue) {
-                    if(readValue != null){
+                localforage.getItem(cahce_key).then(function (readValue) {
+                    if (readValue != null) {
                         _this.CacheNotLoadControll = readValue;
                     }
-                    server.clearcachelocaldata(function(){
+                    server.clearcachelocaldata(function () {
                         ini();
                     });
                 });
-            } catch(e) {
+            } catch (e) {
                 ini();
                 console.log("缓存操作失败");
             }
         }, 1);
     },
-    storeSheetParam: function() {
+    storeSheetParam: function () {
         let index = this.getSheetIndex(Store.currentSheetIndex);
         let file = Store.luckysheetfile[index];
         file["config"] = Store.config;
@@ -1005,17 +1005,17 @@ const sheetmanage = {
         file["luckysheet_select_save"] = $.extend(true, [], Store.luckysheet_select_save);
         file["luckysheet_selection_range"] = $.extend(true, [], Store.luckysheet_selection_range);
 
-        if($("#luckysheet-scrollbar-x")[0].scrollWidth > $("#luckysheet-scrollbar-x")[0].offsetWidth){
+        if ($("#luckysheet-scrollbar-x")[0].scrollWidth > $("#luckysheet-scrollbar-x")[0].offsetWidth) {
             file["scrollLeft"] = $("#luckysheet-scrollbar-x").scrollLeft(); //横向滚动条
         }
 
-        if($("#luckysheet-scrollbar-y")[0].scrollHeight > $("#luckysheet-scrollbar-y")[0].offsetHeight){
+        if ($("#luckysheet-scrollbar-y")[0].scrollHeight > $("#luckysheet-scrollbar-y")[0].offsetHeight) {
             file["scrollTop"] = $("#luckysheet-scrollbar-y").scrollTop(); //纵向滚动条
         }
 
         file["zoomRatio"] = Store.zoomRatio;
     },
-    setSheetParam: function(isload=true) {
+    setSheetParam: function (isload = true) {
         let index = this.getSheetIndex(Store.currentSheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1028,16 +1028,16 @@ const sheetmanage = {
 
         this.sheetParamRestore(file, Store.flowdata);
 
-        if(file["freezen"] == null){
+        if (file["freezen"] == null) {
             luckysheetFreezen.freezenhorizontaldata = null;
             luckysheetFreezen.freezenverticaldata = null;
         }
-        else{
+        else {
             luckysheetFreezen.freezenhorizontaldata = file["freezen"].horizontal == null ? null : file["freezen"].horizontal.freezenhorizontaldata;
             luckysheetFreezen.freezenverticaldata = file["freezen"].vertical == null ? null : file["freezen"].vertical.freezenverticaldata;
         }
-        
-        if(isload){
+
+        if (isload) {
             rhchInit(Store.flowdata.length, Store.flowdata[0].length);
         }
 
@@ -1057,10 +1057,10 @@ const sheetmanage = {
         //链接
         hyperlinkCtrl.hyperlink = file.hyperlink;
         hyperlinkCtrl.init();
-        
+
         createFilterOptions(file["filter_select"], file["filter"]);
     },
-    restoreselect: function() {
+    restoreselect: function () {
         let index = this.getSheetIndex(Store.currentSheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1084,7 +1084,7 @@ const sheetmanage = {
             $("#luckysheet-scrollbar-y").scrollTop(0);
         }
     },
-    storeSheetParamALL: function() {
+    storeSheetParamALL: function () {
         let _this = this;
 
         _this.storeSheetParam();
@@ -1092,53 +1092,53 @@ const sheetmanage = {
         Store.luckysheetfile[index]["data"] = Store.flowdata;
         Store.luckysheetfile[index]["config"] = $.extend(true, {}, Store.config);
     },
-    mergeCalculationSheet:{},
-    mergeCalculation:function(index){
+    mergeCalculationSheet: {},
+    mergeCalculation: function (index) {
         let file = Store.luckysheetfile[this.getSheetIndex(index)];
         let config = file.config, data = file.data;
-        if(config==null){
+        if (config == null) {
             return;
         }
         let mergeConfig = config.merge;
-        if(mergeConfig==null || index in this.mergeCalculationSheet || file["autoCalculationMerge"]===false){
+        if (mergeConfig == null || index in this.mergeCalculationSheet || file["autoCalculationMerge"] === false) {
             return;
         }
 
         this.mergeCalculationSheet[index] = 1;
 
-        for(let x in mergeConfig){
+        for (let x in mergeConfig) {
             let r = parseInt(x.substr(0, x.indexOf('_')));
             let c = parseInt(x.substr(x.indexOf('_') + 1));
             let mcInfo = mergeConfig[x];
-            if(data[r][c]==null){
+            if (data[r][c] == null) {
                 data[r][c] = {};
             }
 
             data[r][c]["mc"] = {
-                r:r,
-                c:c,
-                rs:mcInfo.rs,
-                cs:mcInfo.cs,
+                r: r,
+                c: c,
+                rs: mcInfo.rs,
+                cs: mcInfo.cs,
             }
 
-            for(let ir=r;ir<r+mcInfo.rs;ir++){
-                for(let ic=c;ic<c+mcInfo.cs;ic++){
-                    if(ir==r && ic==c){
+            for (let ir = r; ir < r + mcInfo.rs; ir++) {
+                for (let ic = c; ic < c + mcInfo.cs; ic++) {
+                    if (ir == r && ic == c) {
                         continue;
                     }
-                    if(data[ir][ic]==null){
+                    if (data[ir][ic] == null) {
                         data[ir][ic] = {};
                     }
                     data[ir][ic]["mc"] = {
-                        r:r,
-                        c:c,
+                        r: r,
+                        c: c,
                     }
                 }
             }
 
         }
     },
-    loadOtherFile:function(file){
+    loadOtherFile: function (file) {
         let _this = this;
         // let sheetindexset = _this.checkLoadSheetIndex(file);
         // let sheetindex = [];
@@ -1162,44 +1162,44 @@ const sheetmanage = {
         //     }
         // }
 
-        for(let i = 0;i<Store.luckysheetfile.length;i++){
+        for (let i = 0; i < Store.luckysheetfile.length; i++) {
             let otherfile = Store.luckysheetfile[i];
-            if(otherfile.index == file.index){
+            if (otherfile.index == file.index) {
                 continue;
             }
             // let otherfile = Store.luckysheetfile[_this.getSheetIndex(item)]; 
-            if(otherfile["load"] == null || otherfile["load"] == "0"){
+            if (otherfile["load"] == null || otherfile["load"] == "0") {
                 otherfile["data"] = _this.buildGridData(otherfile);
                 otherfile["load"] = "1";
             }
         }
     },
-    changeSheet: function(index, isPivotInitial, isNewSheet, isCopySheet) {
-        if(isEditMode()){
+    changeSheet: function (index, isPivotInitial, isNewSheet, isCopySheet) {
+        if (isEditMode()) {
             // alert("非编辑模式下不允许该操作！");
             return;
         }
 
-        let _this = this;        
-        
-        if(index==Store.currentSheetIndex){
+        let _this = this;
+
+        if (index == Store.currentSheetIndex) {
             return;
         }
 
-        if(server.allowUpdate){
+        if (server.allowUpdate) {
             $("#luckysheet-cell-main #luckysheet-multipleRange-show").empty();
             server.multipleIndex = 0;
         }
         let file = Store.luckysheetfile[_this.getSheetIndex(index)]
         // 钩子 sheetCreateAfter
         if (isNewSheet) {
-            method.createHookFunction('sheetCreateAfter', { sheet: file }); 
+            method.createHookFunction('sheetCreateAfter', { sheet: file });
         }
         // 钩子 sheetCopyAfter
         if (isCopySheet) {
-            method.createHookFunction('sheetCopyAfter', { sheet: file }); 
+            method.createHookFunction('sheetCopyAfter', { sheet: file });
         }
-        
+
         // 钩子函数
         method.createHookFunction('sheetActivate', index, isPivotInitial, isNewSheet);
 
@@ -1209,25 +1209,25 @@ const sheetmanage = {
         _this.storeSheetParamALL();
         _this.setCurSheet(index);
 
-  
+
         if (!!file.isPivotTable) {
             Store.luckysheetcurrentisPivotTable = true;
             if (!isPivotInitial) {
                 pivotTable.changePivotTable(index);
             }
         }
-        else{
+        else {
             Store.luckysheetcurrentisPivotTable = false;
             $("#luckysheet-modal-dialog-slider-pivot").hide();
             luckysheetsizeauto(false);
         }
 
         let load = file["load"];
-        if (load != null) {        
+        if (load != null) {
             let data = _this.buildGridData(file);
             file.data = data;
             // _this.loadOtherFile(file);
-            
+
             _this.mergeCalculation(index);
             _this.setSheetParam(true);
             _this.showSheet();
@@ -1240,7 +1240,7 @@ const sheetmanage = {
         }
         else {
             let loadSheetUrl = server.loadSheetUrl;
-            if(loadSheetUrl == "" || Store.luckysheetcurrentisPivotTable || !!isNewSheet){
+            if (loadSheetUrl == "" || Store.luckysheetcurrentisPivotTable || !!isNewSheet) {
                 let data = _this.buildGridData(file);
 
                 file["data"] = data;
@@ -1253,14 +1253,14 @@ const sheetmanage = {
 
                 // let sheetindexset = _this.checkLoadSheetIndex(file);
                 // let sheetindex = [];
-        
+
                 // for(let i = 0; i < sheetindexset.length; i++){
                 //     let item = sheetindexset[i];
-        
+
                 //     if(item == file["index"]){
                 //         continue;
                 //     }
-        
+
                 //     sheetindex.push(item);
                 // }
 
@@ -1286,28 +1286,28 @@ const sheetmanage = {
 
                 server.saveParam("shs", null, Store.currentSheetIndex);
             }
-            else{
+            else {
                 $("#luckysheet-grid-window-1").append(luckysheetlodingHTML());
 
                 let sheetindex = _this.checkLoadSheetIndex(file);
-                
-                $.post(loadSheetUrl, {"gridKey" : server.gridKey, "index": sheetindex.join(",")}, function (d) {
+
+                $.post(loadSheetUrl, { "gridKey": server.gridKey, "index": sheetindex.join(",") }, function (d) {
                     let dataset = new Function("return " + d)();
                     file.celldata = dataset[index.toString()];
                     let data = _this.buildGridData(file);
 
-                    setTimeout(function(){
+                    setTimeout(function () {
                         Store.loadingObj.close()
                     }, 500);
 
-                    for(let item in dataset){
-                        if(item == index){
+                    for (let item in dataset) {
+                        if (item == index) {
                             continue;
                         }
 
                         let otherfile = Store.luckysheetfile[_this.getSheetIndex(item)];
-                        
-                        if(otherfile["load"] == null || otherfile["load"] == "0"){
+
+                        if (otherfile["load"] == null || otherfile["load"] == "0") {
                             otherfile.celldata = dataset[item.toString()];
                             otherfile["data"] = _this.buildGridData(otherfile);
                             otherfile["load"] = "1";
@@ -1319,7 +1319,7 @@ const sheetmanage = {
                     _this.mergeCalculation(index);
                     _this.setSheetParam();
                     _this.showSheet();
-                   
+
                     setTimeout(function () {
                         _this.restoreCache();
                         formula.execFunctionGroupForce(luckysheetConfigsetting.forceCalculation);
@@ -1337,86 +1337,86 @@ const sheetmanage = {
 
         //隐藏其他sheet的图表，显示当前sheet的图表 chartMix
         renderChartShow(index);
-        
+
         luckysheetFreezen.initialFreezen(index);
         _this.restoreselect();
     },
-    checkLoadSheetIndexToDataIndex:{},
-    checkLoadSheetIndex: function(file) {
-    	let calchain = formula.getAllFunctionGroup();//file.calcChain; //index
-    	let chart = file.chart; //dataSheetIndex
-    	let pivotTable = file.pivotTable; //pivotDataSheetIndex
+    checkLoadSheetIndexToDataIndex: {},
+    checkLoadSheetIndex: function (file) {
+        let calchain = formula.getAllFunctionGroup();//file.calcChain; //index
+        let chart = file.chart; //dataSheetIndex
+        let pivotTable = file.pivotTable; //pivotDataSheetIndex
 
-        let ret= [], cache = {};
-        
-        if(file.index in this.checkLoadSheetIndexToDataIndex){
+        let ret = [], cache = {};
+
+        if (file.index in this.checkLoadSheetIndexToDataIndex) {
             return [];
         }
 
-    	ret.push(file.index);
+        ret.push(file.index);
         cache[file.index.toString()] = 1;
         this.checkLoadSheetIndexToDataIndex[file.index] = 1;
-        if(calchain != null){
+        if (calchain != null) {
             let dataIndexList = {};
-        	for(let i = 0; i < calchain.length; i++){
-        		let f = calchain[i];
+            for (let i = 0; i < calchain.length; i++) {
+                let f = calchain[i];
                 let dataindex = f.index;
                 let formulaTxt = getcellFormula(f.r, f.c, dataindex);
 
-                if(formulaTxt==null){
+                if (formulaTxt == null) {
                     let file = Store.luckysheetfile[this.getSheetIndex(dataindex)];
                     file.data = this.buildGridData(file);
                     formulaTxt = getcellFormula(f.r, f.c, dataindex);
 
-                    if(formulaTxt==null){
+                    if (formulaTxt == null) {
                         continue;
                     }
                 }
-                
-                if(formulaTxt.indexOf("!")==-1){
+
+                if (formulaTxt.indexOf("!") == -1) {
                     // dataIndexList[dataindex] = 1;
                     formula.addToSheetIndexList(formulaTxt, dataindex);
                 }
-                else if(formula.formulaContainSheetList!=null && formula.formulaContainSheetList[formulaTxt]!=null){
-                    for(let dataSheetIndex in formula.formulaContainSheetList[formulaTxt]){
+                else if (formula.formulaContainSheetList != null && formula.formulaContainSheetList[formulaTxt] != null) {
+                    for (let dataSheetIndex in formula.formulaContainSheetList[formulaTxt]) {
                         dataIndexList[dataSheetIndex] = 1;
                     }
                 }
-                else{
-                    formula.functionParser(formulaTxt, (str)=>{
+                else {
+                    formula.functionParser(formulaTxt, (str) => {
                         formula.addToCellList(formulaTxt, str);
-                        if(str.indexOf("!")>-1){
+                        if (str.indexOf("!") > -1) {
                             let name = str.substr(0, str.indexOf('!'));
                             // dataNameList[name] = true;
-    
+
                             let sheet = this.getSheetByName(name);
-                            if(sheet!=null){
+                            if (sheet != null) {
                                 let dataSheetIndex = sheet.index;
                                 dataIndexList[dataSheetIndex] = 1;
-    
+
                                 formula.addToSheetIndexList(formulaTxt, dataSheetIndex);
                             }
                         }
                     });
 
-                    if(formula.formulaContainSheetList[formulaTxt]==null){
+                    if (formula.formulaContainSheetList[formulaTxt] == null) {
                         // dataIndexList[dataindex] = 1;
                         formula.addToSheetIndexList(formulaTxt, dataindex);
                     }
                 }
-                
-                if(dataindex == null){
+
+                if (dataindex == null) {
                     continue;
                 }
-                
-        		// if(cache[dataindex.toString()] == null){
-        		// 	// ret.push(dataindex);
+
+                // if(cache[dataindex.toString()] == null){
+                // 	// ret.push(dataindex);
                 //     cache[dataindex.toString()] = 1;
                 //     this.checkLoadSheetIndexToDataIndex[dataindex] = 1;
-        		// }
+                // }
             }
-            
-            for(let index in dataIndexList){
+
+            for (let index in dataIndexList) {
                 // let sheet = this.getSheetByName(n);
                 // if(sheet==null){
                 //     continue;
@@ -1428,42 +1428,42 @@ const sheetmanage = {
 
                 let dataindex = index;
 
-                if(cache[dataindex.toString()] == null){
-        			ret.push(dataindex);
+                if (cache[dataindex.toString()] == null) {
+                    ret.push(dataindex);
                     cache[dataindex.toString()] = 1;
                     this.checkLoadSheetIndexToDataIndex[dataindex] = 1;
-        		}
+                }
             }
         }
 
-        if(chart != null){
-            for(let i = 0; i < chart.length; i++){
+        if (chart != null) {
+            for (let i = 0; i < chart.length; i++) {
                 let cc = chart[i];
                 let dataindex = cc.dataSheetIndex;
 
-                if(dataindex == null){
+                if (dataindex == null) {
                     continue;
                 }
 
-                if(cache[dataindex.toString()] == null){
+                if (cache[dataindex.toString()] == null) {
                     ret.push(dataindex);
                     cache[dataindex.toString()] = 1;
                 }
-            } 
+            }
         }
 
-        if(pivotTable != null){
+        if (pivotTable != null) {
             let dataindex = pivotTable.pivotDataSheetIndex;
-            
-    		if(dataindex != null && cache[dataindex.toString()] == null){
-    			ret.push(dataindex);
-    			cache[dataindex.toString()] = 1;
-    		}
+
+            if (dataindex != null && cache[dataindex.toString()] == null) {
+                ret.push(dataindex);
+                cache[dataindex.toString()] = 1;
+            }
         }
 
-    	return ret;
+        return ret;
     },
-    showSheet: function() {
+    showSheet: function () {
         // changeSheetContainerSize();
         $("#luckysheet-cell-flow_0").css({ "width": Store.ch_width, "top": "-1px" }); //width更新
         $("#luckysheet-sheettable_0").css({ "width": Store.ch_width - 1, "height": Store.rh_height });
@@ -1479,18 +1479,18 @@ const sheetmanage = {
 
 
         Store.scrollRefreshSwitch = false;
-        
-        if(file["scrollLeft"] != null && file["scrollLeft"] > 0){
+
+        if (file["scrollLeft"] != null && file["scrollLeft"] > 0) {
             $("#luckysheet-scrollbar-x").scrollLeft(file["scrollLeft"] * Store.zoomRatio);
         }
-        else{
+        else {
             $("#luckysheet-scrollbar-x").scrollLeft(0);
         }
 
-        if(file["scrollTop"] != null && file["scrollTop"] > 0){
+        if (file["scrollTop"] != null && file["scrollTop"] > 0) {
             $("#luckysheet-scrollbar-y").scrollTop(file["scrollTop"] * Store.zoomRatio);
         }
-        else{
+        else {
             $("#luckysheet-scrollbar-y").scrollTop(0);
         }
 
@@ -1500,7 +1500,7 @@ const sheetmanage = {
 
         zoomNumberDomBind(Store.zoomRatio);
     },
-    setCurSheet: function(index) {
+    setCurSheet: function (index) {
         for (let i = 0; i < Store.luckysheetfile.length; i++) {
             if (Store.luckysheetfile[i]["index"] == index) {
                 Store.luckysheetfile[i].status = 1;
@@ -1512,7 +1512,7 @@ const sheetmanage = {
 
         Store.currentSheetIndex = index;
     },
-    getSheetIndex: function(index) {
+    getSheetIndex: function (index) {
         for (let i = 0; i < Store.luckysheetfile.length; i++) {
             if (Store.luckysheetfile[i]["index"] == index) {
                 return i;
@@ -1521,8 +1521,8 @@ const sheetmanage = {
 
         return null;
     },
-    changeSheetExec: function(index, isPivotInitial, isNewSheet, isCopySheet) {
-        
+    changeSheetExec: function (index, isPivotInitial, isNewSheet, isCopySheet) {
+
         let $sheet = $("#luckysheet-sheets-item" + index);
 
         window.luckysheet_getcelldata_cache = null;
@@ -1531,38 +1531,38 @@ const sheetmanage = {
 
         cleargridelement();
         this.changeSheet(index, isPivotInitial, isNewSheet, isCopySheet);
-        
+
         $("#luckysheet-sheet-list, #luckysheet-rightclick-sheet-menu").hide();
 
         if (formula.rangestart) {
             formula.createRangeHightlight();
         }
-        
+
         this.sheetBarShowAndHide(index);
     },
-    sheetArrowShowAndHide(){
+    sheetArrowShowAndHide () {
         const $wrap = $('#luckysheet-sheet-container-c');
         if (!$wrap.length) return;
         var sw = $wrap[0].scrollWidth;
         var w = Math.ceil($wrap.width());
 
         if (sw > w) {
-            if(luckysheetConfigsetting.showsheetbarConfig.sheet){
+            if (luckysheetConfigsetting.showsheetbarConfig.sheet) {
                 $("#luckysheet-sheet-area .luckysheet-sheets-scroll").css("display", "inline-block");
                 $("#luckysheet-sheet-container .docs-sheet-fade-left").show();
             }
-            
+
         }
-        else{
+        else {
             $("#luckysheet-sheet-area .luckysheet-sheets-scroll").css("display", "none");
             $("#luckysheet-sheet-container .docs-sheet-fade-left").hide();
         }
     },
     // *显示sheet栏左右的灰色
-    sheetBarShowAndHide(index){
+    sheetBarShowAndHide (index) {
         let $c = $("#luckysheet-sheet-container-c");
 
-        if(index!=null){
+        if (index != null) {
             let $sheet = $("#luckysheet-sheets-item" + index);
             $c.scrollLeft($sheet.offset().left);
         }
@@ -1584,7 +1584,7 @@ const sheetmanage = {
             $("#luckysheet-sheet-container .docs-sheet-fade-right").show();
         }
     },
-    delChart: function(chart_id, sheetIndex) {
+    delChart: function (chart_id, sheetIndex) {
         let index = this.getSheetIndex(sheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1600,7 +1600,7 @@ const sheetmanage = {
             }
         }
     },
-    saveChart: function(json) {//采用chartMix store存储，弃用Store.luckysheetfile存储，防止重复存储
+    saveChart: function (json) {//采用chartMix store存储，弃用Store.luckysheetfile存储，防止重复存储
         let index = this.getSheetIndex(json.sheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1620,7 +1620,7 @@ const sheetmanage = {
             file.chart.push(json);
         }
     },
-    getChart: function(sheetIndex, chart_id) {
+    getChart: function (sheetIndex, chart_id) {
         let index = this.getSheetIndex(sheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1637,7 +1637,7 @@ const sheetmanage = {
             return null;
         }
     },
-    getRangetxt: function(sheetIndex, range, currentIndex) {
+    getRangetxt: function (sheetIndex, range, currentIndex) {
         let sheettxt = "";
 
         if (currentIndex == null) {
@@ -1666,28 +1666,28 @@ const sheetmanage = {
             }
         }
     },
-    getSheetName: function(sheetIndex) {
+    getSheetName: function (sheetIndex) {
         if (sheetIndex == null) {
             sheetIndex = Store.currentSheetIndex;
         }
 
         return Store.luckysheetfile[this.getSheetIndex(sheetIndex)].name;
     },
-    getSheetMerge: function() {
-        if(Store.config.merge == null){
-        	return null;
+    getSheetMerge: function () {
+        if (Store.config.merge == null) {
+            return null;
         }
 
         return Store.config.merge;
     },
-    getSheetData: function(sheetIndex) {
+    getSheetData: function (sheetIndex) {
         if (sheetIndex == null) {
             sheetIndex = Store.currentSheetIndex;
         }
 
         return Store.luckysheetfile[this.getSheetIndex(sheetIndex)].data;
     },
-    getSheetConfig: function(sheetIndex) {
+    getSheetConfig: function (sheetIndex) {
         let _this = this;
 
         if (sheetIndex == null) {
@@ -1696,13 +1696,13 @@ const sheetmanage = {
 
         let config = Store.luckysheetfile[_this.getSheetIndex(sheetIndex)].config;
 
-        if(config == null){
-        	Store.luckysheetfile[_this.getSheetIndex(sheetIndex)].config = {};
+        if (config == null) {
+            Store.luckysheetfile[_this.getSheetIndex(sheetIndex)].config = {};
         }
 
         return Store.luckysheetfile[_this.getSheetIndex(sheetIndex)].config;
     },
-    restoreFilter: function(sheetIndex) {
+    restoreFilter: function (sheetIndex) {
         let index = this.getSheetIndex(sheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1717,40 +1717,40 @@ const sheetmanage = {
         //     return;
         // }
 
-        if(getObjType(file.filter_select) == "string"){
+        if (getObjType(file.filter_select) == "string") {
             file.filter_select = JSON.parse(file.filter_select);
         }
 
-        if(file.filter_select == null || file.filter_select.row == null || file.filter_select.column == null){
+        if (file.filter_select == null || file.filter_select.row == null || file.filter_select.column == null) {
             return;
         }
 
         createFilterOptions(file.filter_select);
 
-        if(getObjType(file.filter) != "object"){
-            if(file.filter != null && getObjType(file.filter) == "string"){ 
+        if (getObjType(file.filter) != "object") {
+            if (file.filter != null && getObjType(file.filter) == "string") {
                 file.filter = JSON.parse(file.filter);
             }
         }
 
         let rowhidden = {};
-        if(file.config != null && file.config.rowhidden != null){
-            rowhidden =  file.config.rowhidden;
+        if (file.config != null && file.config.rowhidden != null) {
+            rowhidden = file.config.rowhidden;
         }
 
-        $("#luckysheet-filter-options-sheet" + sheetIndex + " .luckysheet-filter-options").each(function(i){
-            if(file.filter == null){
+        $("#luckysheet-filter-options-sheet" + sheetIndex + " .luckysheet-filter-options").each(function (i) {
+            if (file.filter == null) {
                 return false;
             }
 
             let $top = $(this);
             let item = file.filter[i];
 
-            if(item == null){
+            if (item == null) {
                 return true;
             }
 
-            if(getObjType(item) != "object"){
+            if (getObjType(item) != "object") {
                 item = JSON.parse(item);
             }
 
@@ -1759,16 +1759,16 @@ const sheetmanage = {
             rowhidden = $.extend(true, rowhidden, item.rowhidden);
         });
 
-        if(file.config == null){
+        if (file.config == null) {
             file.config = {};
         }
 
         file.config["rowhidden"] = rowhidden;
         Store.config = file.config;
 
-        jfrefreshgrid_rhcw(Store.flowdata.length, Store.flowdata[0].length,false);
+        jfrefreshgrid_rhcw(Store.flowdata.length, Store.flowdata[0].length, false);
     },
-    restorePivot: function(sheetIndex) {
+    restorePivot: function (sheetIndex) {
         let index = this.getSheetIndex(sheetIndex);
         let file = Store.luckysheetfile[index];
 
@@ -1780,32 +1780,32 @@ const sheetmanage = {
         pivotTable.initialPivotManage(true);
         pivotTable.refreshPivotTable(false);
     },
-    restoreSheetAll: function(sheetIndex) {
-        let _this= this;
+    restoreSheetAll: function (sheetIndex) {
+        let _this = this;
         _this.restorePivot(sheetIndex);
         _this.restoreFilter(sheetIndex);
         _this.restoreFreezen(sheetIndex);
     },
-    restoreFreezen: function(sheetIndex) {
+    restoreFreezen: function (sheetIndex) {
         luckysheetFreezen.initialFreezen(sheetIndex);
     },
-    restoreCache: function() {
+    restoreCache: function () {
         let _this = this;
-        
+
         let data = _this.CacheNotLoadControll;
         _this.CacheNotLoadControll = [];
 
-        if(data.length == 0){
+        if (data.length == 0) {
             return;
         }
 
-        for(let i = 0; i < data.length; i++){
+        for (let i = 0; i < data.length; i++) {
             let item = data[i];
             _this.execCache(item);
         }
     },
-    CacheNotLoadControll:[],
-    execCache: function(item) {
+    CacheNotLoadControll: [],
+    execCache: function (item) {
         let _this = this;
 
         let type = item.t;
@@ -1813,121 +1813,121 @@ const sheetmanage = {
         let value = item.v;
         let file = Store.luckysheetfile[_this.getSheetIndex(index)];
 
-        if(type == "sha"){
+        if (type == "sha") {
             Store.luckysheetfile.push(value);
         }
-        else if(type == "shc"){
+        else if (type == "shc") {
             let copyjson = $.extend(true, {}, Store.luckysheetfile[_this.getSheetIndex(value.copyindex)]);
             copyjson.index = index;
             Store.luckysheetfile.push(copyjson);
         }
-        else if(type == "shd"){
+        else if (type == "shd") {
             Store.luckysheetfile.splice(value.deleIndex, 1);
         }
-        else if(type == "shr"){
-            for(let pos in value){
+        else if (type == "shr") {
+            for (let pos in value) {
                 Store.luckysheetfile[_this.getSheetIndex(pos)].order = value[pos];
             }
         }
 
-        if((file == null || file.load != "1") && !(type in {"sha":0, "shc":0, "shd":0, "shr":0}) ){
+        if ((file == null || file.load != "1") && !(type in { "sha": 0, "shc": 0, "shd": 0, "shr": 0 })) {
             _this.CacheNotLoadControll.push(item);
             return;
         }
 
-        if(type == "v"){
+        if (type == "v") {
             let r = item.r, c = item.c, v = item.v;
             let data = _this.getSheetData(index);
             file.data[r][c] = v;
         }
-        else if(type == "fc"){
+        else if (type == "fc") {
             let op = item.op, pos = item.pos;
 
-            if(getObjType(value) != "object"){
+            if (getObjType(value) != "object") {
                 value = new Function("return " + value)();
             }
 
             let r = value.r, c = value.c;
 
-            if(op == "del" ){
+            if (op == "del") {
                 formula.delFunctionGroup(r, c, index);
             }
             else {
                 formula.insertUpdateFunctionGroup(r, c, index);
             }
         }
-        else if(type == "cg"){
+        else if (type == "cg") {
             let v = value, k = item.k;
             let config1 = _this.getSheetConfig(index);
-            
-            if(!(k in config1)){
+
+            if (!(k in config1)) {
                 config1[k] = {};
             }
 
-            for(let key in v){
+            for (let key in v) {
                 config1[k][key] = v[key];
             }
 
             Store.config = config1;
         }
-        else if(type == "f"){
+        else if (type == "f") {
             let v = value, op = item.op, pos = item.pos;
             let filter = file.filter;
 
-            if(filter == null){
+            if (filter == null) {
                 filter = {};
             }
 
-            if(op == "upOrAdd"){
-                filter[pos] =  v;
+            if (op == "upOrAdd") {
+                filter[pos] = v;
             }
-            else if(op == "del"){
+            else if (op == "del") {
                 delete filter[pos];
             }
         }
-        else if(type == "fsc"){
+        else if (type == "fsc") {
             file.filter = null;
             file.filter_select = null;
         }
-        else if(type == "fsr"){
+        else if (type == "fsr") {
             let v = value;
             file.filter = v.filter;
             file.filter_select = v.filter_select;
         }
-        else if(type == "sh"){
-            let op = item.op, cur = item.cur, v = value;       
-            if(op == "hide"){
+        else if (type == "sh") {
+            let op = item.op, cur = item.cur, v = value;
+            if (op == "hide") {
                 file.status = 0;
                 Store.luckysheetfile[_this.getSheetIndex(cur)].status = 1;
             }
-            else if(op == "show"){
-                for(let i = 0; i < Store.luckysheetfile.length; i++){
+            else if (op == "show") {
+                for (let i = 0; i < Store.luckysheetfile.length; i++) {
                     Store.luckysheetfile[i].status = 0;
                 }
                 file.status = 1;
             }
         }
-        else if(type == "all"){
+        else if (type == "all") {
             let k = item.k, s = item.s;
-            if(s && getObjType(value) != "object"){
+            if (s && getObjType(value) != "object") {
                 file[k] = JSON.stringify(value);
             }
-            else{
+            else {
                 file[k] = value;
             }
         }
-        else if(type == "c"){
+        else if (type == "c") {
             let op = item.op, cid = item.cid;
 
-            if(op == "add"){
+            if (op == "add") {
                 file.chart.push(value);
             }
-            else if(op == "xy" || op == "wh" || op == "update"){
-                for(let i = 0; i < file.chart.length; i++){
-                    if(file.chart[i].chart_id == cid){
-                        for(let item in file.chart[i]){
-                            for(let vitem in value){
-                                if(item == vitem){
+            else if (op == "xy" || op == "wh" || op == "update") {
+                for (let i = 0; i < file.chart.length; i++) {
+                    if (file.chart[i].chart_id == cid) {
+                        for (let item in file.chart[i]) {
+                            for (let vitem in value) {
+                                if (item == vitem) {
                                     file.chart[i][item] = value[vitem];
                                 }
                             }
@@ -1936,39 +1936,39 @@ const sheetmanage = {
                     }
                 }
             }
-            else if(op == "del"){
-                for(let i = 0; i < file.chart.length; i++){
-                    if(file.chart[i].chart_id == cid){
-                        file.chart.splice(i, 1); 
+            else if (op == "del") {
+                for (let i = 0; i < file.chart.length; i++) {
+                    if (file.chart[i].chart_id == cid) {
+                        file.chart.splice(i, 1);
                         return;
                     }
                 }
             }
         }
-        else if(type == "drc"){
+        else if (type == "drc") {
             let rc = item.rc, index = value.index, len = value.len;
             let celldata = file.celldata;
 
-            if(rc == "r"){
-                for(let i = 0; celldata.length == 0; i++){
+            if (rc == "r") {
+                for (let i = 0; celldata.length == 0; i++) {
                     let cell = celldata[i];
-                    if(cell.r >= index && cell.r < index + len){
+                    if (cell.r >= index && cell.r < index + len) {
                         delete celldata[i];
                     }
-                    else if(cell.r >= index + len){
+                    else if (cell.r >= index + len) {
                         cell.r -= len;
                     }
                 }
 
                 file.row -= len;
             }
-            else{
-                for(let i = 0; celldata.length == 0; i++){
+            else {
+                for (let i = 0; celldata.length == 0; i++) {
                     let cell = celldata[i];
-                    if(cell.c >= index && cell.c < index + len){
+                    if (cell.c >= index && cell.c < index + len) {
                         delete celldata[i];
                     }
-                    else if(cell.c >= index + len){
+                    else if (cell.c >= index + len) {
                         cell.c -= len;
                     }
                 }
@@ -1977,18 +1977,18 @@ const sheetmanage = {
             }
 
             let ret = [];
-            for(let i = 0; i < celldata.length; i++){
-                if(celldata[i] != null){
+            for (let i = 0; i < celldata.length; i++) {
+                if (celldata[i] != null) {
                     ret.push(celldata[i]);
                 }
             }
             file.celldata = ret;
-            
+
             let mtype, mst, med;
-            if(rc == "r"){
+            if (rc == "r") {
                 mtype = "row";
             }
-            else{
+            else {
                 mtype = "column";
             }
             mst = index;
@@ -1996,24 +1996,24 @@ const sheetmanage = {
 
             luckysheetdeletetable(mtype, mst, med, true);
         }
-        else if(type=="arc"){
+        else if (type == "arc") {
             let rc = item.rc, index = value.index, len = value.len;
             let celldata = file.celldata;
 
-            if(rc == "r"){
-                for(let i = 0; i < celldata.length; i++){
+            if (rc == "r") {
+                for (let i = 0; i < celldata.length; i++) {
                     let cell = celldata[i];
-                    if(cell.r > index){
+                    if (cell.r > index) {
                         cell.r += len;
                     }
                 }
 
                 file.row += len;
             }
-            else{
-                for(let i = 0; i < celldata.length; i++){
+            else {
+                for (let i = 0; i < celldata.length; i++) {
                     let cell = celldata[i];
-                    if(cell.c > index){
+                    if (cell.c > index) {
                         cell.c += len;
                     }
                 }
@@ -2022,20 +2022,20 @@ const sheetmanage = {
             }
 
             let mtype;
-            if(rc == "r"){
+            if (rc == "r") {
                 mtype = "row";
             }
-            else{
+            else {
                 mtype = "column";
             }
-            
+
             luckysheetextendtable(mtype, index, len, true);
         }
-        else if(type == "na"){
+        else if (type == "na") {
             server.saveParam("na", null, value);
         }
-        else if(type == "thumb"){
-            setTimeout(function(){
+        else if (type == "thumb") {
+            setTimeout(function () {
                 _this.imageRequest();
             }, 2000);
         }
