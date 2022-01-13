@@ -281,40 +281,40 @@ export function keyboardInitial () {
 
             if (anchor.parent().is("#luckysheet-helpbox-cell") || anchor.is("#luckysheet-helpbox-cell")) {
                 if (kcode == keycode.ENTER) {
-                    // let helpboxValue = $("#luckysheet-helpbox-cell").text();
+                    let helpboxValue = $("#luckysheet-helpbox-cell").text();
 
-                    // if (formula.iscelldata(helpboxValue)) {
-                    //     let cellrange = formula.getcellrange(helpboxValue);
+                    if (formula.iscelldata(helpboxValue)) {
+                        let cellrange = formula.getcellrange(helpboxValue);
 
-                    //     Store.luckysheet_select_save = [{ "row": cellrange["row"], "column": cellrange["column"], "row_focus": cellrange["row"][0], "column_focus": cellrange["column"][0] }];
-                    //     selectHightlightShow();
+                        Store.luckysheet_select_save = [{ "row": cellrange["row"], "column": cellrange["column"], "row_focus": cellrange["row"][0], "column_focus": cellrange["column"][0] }];
+                        selectHightlightShow();
 
-                    //     $("#luckysheet-helpbox-cell").blur();
+                        $("#luckysheet-helpbox-cell").blur();
 
-                    //     let scrollLeft = $("#luckysheet-cell-main").scrollLeft(),
-                    //         scrollTop = $("#luckysheet-cell-main").scrollTop();
-                    //     let winH = $("#luckysheet-cell-main").height(),
-                    //         winW = $("#luckysheet-cell-main").width();
+                        let scrollLeft = $("#luckysheet-cell-main").scrollLeft(),
+                            scrollTop = $("#luckysheet-cell-main").scrollTop();
+                        let winH = $("#luckysheet-cell-main").height(),
+                            winW = $("#luckysheet-cell-main").width();
 
-                    //     let row = Store.visibledatarow[cellrange["row"][1]],
-                    //         row_pre = cellrange["row"][0] - 1 == -1 ? 0 : Store.visibledatarow[cellrange["row"][0] - 1];
-                    //     let col = Store.visibledatacolumn[cellrange["column"][1]],
-                    //         col_pre = cellrange["column"][0] - 1 == -1 ? 0 : Store.visibledatacolumn[cellrange["column"][0] - 1];
+                        let row = Store.visibledatarow[cellrange["row"][1]],
+                            row_pre = cellrange["row"][0] - 1 == -1 ? 0 : Store.visibledatarow[cellrange["row"][0] - 1];
+                        let col = Store.visibledatacolumn[cellrange["column"][1]],
+                            col_pre = cellrange["column"][0] - 1 == -1 ? 0 : Store.visibledatacolumn[cellrange["column"][0] - 1];
 
-                    //     if (col - scrollLeft - winW + 20 > 0) {
-                    //         $("#luckysheet-scrollbar-x").scrollLeft(col - winW + 20);
-                    //     }
-                    //     else if (col_pre - scrollLeft - 20 < 0) {
-                    //         $("#luckysheet-scrollbar-x").scrollLeft(col_pre - 20);
-                    //     }
+                        if (col - scrollLeft - winW + 20 > 0) {
+                            $("#luckysheet-scrollbar-x").scrollLeft(col - winW + 20);
+                        }
+                        else if (col_pre - scrollLeft - 20 < 0) {
+                            $("#luckysheet-scrollbar-x").scrollLeft(col_pre - 20);
+                        }
 
-                    //     if (row - scrollTop - winH + 20 > 0) {
-                    //         $("#luckysheet-scrollbar-y").scrollTop(row - winH + 20);
-                    //     }
-                    //     else if (row_pre - scrollTop - 20 < 0) {
-                    //         $("#luckysheet-scrollbar-y").scrollTop(row_pre - 20);
-                    //     }
-                    // }
+                        if (row - scrollTop - winH + 20 > 0) {
+                            $("#luckysheet-scrollbar-y").scrollTop(row - winH + 20);
+                        }
+                        else if (row_pre - scrollTop - 20 < 0) {
+                            $("#luckysheet-scrollbar-y").scrollTop(row_pre - 20);
+                        }
+                    }
                 }
             }
 
@@ -334,27 +334,28 @@ export function keyboardInitial () {
             event.preventDefault();
         }
         else if (kcode == keycode.ENTER && parseInt($inputbox.css("top")) > 0) {
-            // if ($("#luckysheet-formula-search-c").is(":visible") && formula.searchFunctionCell != null) {
-            //     formula.searchFunctionEnter($("#luckysheet-formula-search-c").find(".luckysheet-formula-search-item-active"));
-            // }
-            // else {
-            //     formula.updatecell(Store.luckysheetCellUpdate[0], Store.luckysheetCellUpdate[1]);
-            //     Store.luckysheet_select_save = [{
-            //         "row": [Store.luckysheetCellUpdate[0], Store.luckysheetCellUpdate[0]],
-            //         "column": [Store.luckysheetCellUpdate[1], Store.luckysheetCellUpdate[1]],
-            //         "row_focus": Store.luckysheetCellUpdate[0],
-            //         "column_focus": Store.luckysheetCellUpdate[1]
-            //     }];
-            //     luckysheetMoveHighlightCell("down", 1, "rangeOfSelect");
-            // }
-            // //若有参数弹出框，隐藏
-            // if ($("#luckysheet-search-formula-parm").is(":visible")) {
-            //     $("#luckysheet-search-formula-parm").hide();
-            // }
-            // //若有参数选取范围弹出框，隐藏
-            // if ($("#luckysheet-search-formula-parm-select").is(":visible")) {
-            //     $("#luckysheet-search-formula-parm-select").hide();
-            // }
+            if ($("#luckysheet-formula-search-c").is(":visible") && formula.searchFunctionCell != null) {
+                formula.searchFunctionEnter($("#luckysheet-formula-search-c").find(".luckysheet-formula-search-item-active"));
+            }
+            else {
+                formula.updatecell(Store.luckysheetCellUpdate[0], Store.luckysheetCellUpdate[1]);
+                Store.luckysheet_select_save = [{
+                    "row": [Store.luckysheetCellUpdate[0], Store.luckysheetCellUpdate[0]],
+                    "column": [Store.luckysheetCellUpdate[1], Store.luckysheetCellUpdate[1]],
+                    "row_focus": Store.luckysheetCellUpdate[0],
+                    "column_focus": Store.luckysheetCellUpdate[1]
+                }];
+                luckysheetMoveHighlightCell("down", 1, "rangeOfSelect");
+            }
+
+            //若有参数弹出框，隐藏
+            if ($("#luckysheet-search-formula-parm").is(":visible")) {
+                $("#luckysheet-search-formula-parm").hide();
+            }
+            //若有参数选取范围弹出框，隐藏
+            if ($("#luckysheet-search-formula-parm-select").is(":visible")) {
+                $("#luckysheet-search-formula-parm-select").hide();
+            }
             event.preventDefault();
         }
         else if (kcode == keycode.TAB) {
@@ -386,17 +387,19 @@ export function keyboardInitial () {
             luckysheetMoveHighlightCell("down", 0, "rangeOfSelect");
             event.preventDefault();
         }
-        // else if (kcode == keycode.ENTER) {
-        //     if ($(event.target).hasClass("formulaInputFocus") || $("#luckysheet-conditionformat-dialog").is(":visible")) {
-        //         return;
-        //     }
-        //     else if (String.fromCharCode(kcode) != null && $("#luckysheet-cell-selected").is(":visible")) {
-        //         let last = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1];
-        //         let row_index = last["row_focus"], col_index = last["column_focus"];
-        //         luckysheetupdateCell(row_index, col_index, Store.flowdata);
-        //         event.preventDefault();
-        //     }
-        // }
+        else if (kcode == keycode.ENTER) {
+            if ($(event.target).hasClass("formulaInputFocus") || $("#luckysheet-conditionformat-dialog").is(":visible")) {
+                return;
+            }
+            else if (String.fromCharCode(kcode) != null && $("#luckysheet-cell-selected").is(":visible")) {
+                let last = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1];
+
+                let row_index = last["row_focus"], col_index = last["column_focus"];
+
+                luckysheetupdateCell(row_index, col_index, Store.flowdata);
+                event.preventDefault();
+            }
+        }
         else {
             if (ctrlKey || event.metaKey) {
                 if (shiftKey) {
@@ -406,33 +409,35 @@ export function keyboardInitial () {
                     }
 
                     //Ctrl + shift + 方向键  调整选区
-                    // if (kcode == keycode.UP) {
-                    //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                    //         return;
-                    //     }
+                    if (kcode == keycode.UP) {
+                        if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                            return;
+                        }
 
-                    //     luckysheetMoveHighlightRange2("up", "rangeOfSelect");
-                    // }
-                    // else if (kcode == keycode.DOWN) {
-                    //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                    //         return;
-                    //     }
-                    //     luckysheetMoveHighlightRange2("down", "rangeOfSelect");
-                    // }
-                    // else if (kcode == keycode.LEFT) {
-                    //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                    //         return;
-                    //     }
-                    //     luckysheetMoveHighlightRange2("left", "rangeOfSelect");
-                    // }
-                    // else if (kcode == keycode.RIGHT) {
-                    //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                    //         return;
-                    //     }
-                    //     luckysheetMoveHighlightRange2("right", "rangeOfSelect");
-                    // }
-                    //else 
-                    if (kcode == 186 || kcode == 222) {
+                        luckysheetMoveHighlightRange2("up", "rangeOfSelect");
+                    }
+                    else if (kcode == keycode.DOWN) {
+                        if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                            return;
+                        }
+
+                        luckysheetMoveHighlightRange2("down", "rangeOfSelect");
+                    }
+                    else if (kcode == keycode.LEFT) {
+                        if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                            return;
+                        }
+
+                        luckysheetMoveHighlightRange2("left", "rangeOfSelect");
+                    }
+                    else if (kcode == keycode.RIGHT) {
+                        if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                            return;
+                        }
+
+                        luckysheetMoveHighlightRange2("right", "rangeOfSelect");
+                    }
+                    else if (kcode == 186 || kcode == 222) {
                         let last = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1];
                         let row_index = last["row_focus"],
                             col_index = last["column_focus"];
@@ -448,122 +453,122 @@ export function keyboardInitial () {
                     $("#luckysheet-icon-bold").click();
                 }
                 else if (kcode == 67) {//Ctrl + C  复制
-                    // if (imageCtrl.currentImgId != null) {
-                    //     imageCtrl.copyImgItem(event);
-                    //     return;
-                    // }
+                    if (imageCtrl.currentImgId != null) {
+                        imageCtrl.copyImgItem(event);
+                        return;
+                    }
 
-                    // //复制时存在格式刷状态，取消格式刷
-                    // if (menuButton.luckysheetPaintModelOn) {
-                    //     menuButton.cancelPaintModel();
-                    // }
+                    //复制时存在格式刷状态，取消格式刷
+                    if (menuButton.luckysheetPaintModelOn) {
+                        menuButton.cancelPaintModel();
+                    }
 
-                    // if (Store.luckysheet_select_save.length == 0) {
-                    //     return;
-                    // }
+                    if (Store.luckysheet_select_save.length == 0) {
+                        return;
+                    }
 
-                    // //复制范围内包含部分合并单元格，提示
-                    // if (Store.config["merge"] != null) {
-                    //     let has_PartMC = false;
+                    //复制范围内包含部分合并单元格，提示
+                    if (Store.config["merge"] != null) {
+                        let has_PartMC = false;
 
-                    //     for (let s = 0; s < Store.luckysheet_select_save.length; s++) {
-                    //         let r1 = Store.luckysheet_select_save[s].row[0],
-                    //             r2 = Store.luckysheet_select_save[s].row[1];
-                    //         let c1 = Store.luckysheet_select_save[s].column[0],
-                    //             c2 = Store.luckysheet_select_save[s].column[1];
+                        for (let s = 0; s < Store.luckysheet_select_save.length; s++) {
+                            let r1 = Store.luckysheet_select_save[s].row[0],
+                                r2 = Store.luckysheet_select_save[s].row[1];
+                            let c1 = Store.luckysheet_select_save[s].column[0],
+                                c2 = Store.luckysheet_select_save[s].column[1];
 
-                    //         has_PartMC = hasPartMC(Store.config, r1, r2, c1, c2);
+                            has_PartMC = hasPartMC(Store.config, r1, r2, c1, c2);
 
-                    //         if (has_PartMC) {
-                    //             break;
-                    //         }
-                    //     }
+                            if (has_PartMC) {
+                                break;
+                            }
+                        }
 
-                    //     if (has_PartMC) {
-                    //         if (isEditMode()) {
-                    //             alert(locale_drag.noMerge);
-                    //         }
-                    //         else {
-                    //             tooltip.info(locale_drag.noMerge, "");
-                    //         }
-                    //         return;
-                    //     }
-                    // }
+                        if (has_PartMC) {
+                            if (isEditMode()) {
+                                alert(locale_drag.noMerge);
+                            }
+                            else {
+                                tooltip.info(locale_drag.noMerge, "");
+                            }
+                            return;
+                        }
+                    }
 
-                    // //多重选区 有条件格式时 提示
-                    // let cdformat = Store.luckysheetfile[getSheetIndex(Store.currentSheetIndex)].luckysheet_conditionformat_save;
-                    // if (Store.luckysheet_select_save.length > 1 && cdformat != null && cdformat.length > 0) {
-                    //     let hasCF = false;
+                    //多重选区 有条件格式时 提示
+                    let cdformat = Store.luckysheetfile[getSheetIndex(Store.currentSheetIndex)].luckysheet_conditionformat_save;
+                    if (Store.luckysheet_select_save.length > 1 && cdformat != null && cdformat.length > 0) {
+                        let hasCF = false;
 
-                    //     let cf_compute = conditionformat.getComputeMap();
+                        let cf_compute = conditionformat.getComputeMap();
 
-                    //     label:
-                    //     for (let s = 0; s < Store.luckysheet_select_save.length; s++) {
-                    //         if (hasCF) {
-                    //             break;
-                    //         }
+                        label:
+                        for (let s = 0; s < Store.luckysheet_select_save.length; s++) {
+                            if (hasCF) {
+                                break;
+                            }
 
-                    //         let r1 = Store.luckysheet_select_save[s].row[0],
-                    //             r2 = Store.luckysheet_select_save[s].row[1];
-                    //         let c1 = Store.luckysheet_select_save[s].column[0],
-                    //             c2 = Store.luckysheet_select_save[s].column[1];
+                            let r1 = Store.luckysheet_select_save[s].row[0],
+                                r2 = Store.luckysheet_select_save[s].row[1];
+                            let c1 = Store.luckysheet_select_save[s].column[0],
+                                c2 = Store.luckysheet_select_save[s].column[1];
 
-                    //         for (let r = r1; r <= r2; r++) {
-                    //             for (let c = c1; c <= c2; c++) {
-                    //                 if (conditionformat.checksCF(r, c, cf_compute) != null) {
-                    //                     hasCF = true;
-                    //                     continue label;
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
+                            for (let r = r1; r <= r2; r++) {
+                                for (let c = c1; c <= c2; c++) {
+                                    if (conditionformat.checksCF(r, c, cf_compute) != null) {
+                                        hasCF = true;
+                                        continue label;
+                                    }
+                                }
+                            }
+                        }
 
-                    //     if (hasCF) {
-                    //         if (isEditMode()) {
-                    //             alert(locale_drag.noMulti);
-                    //         }
-                    //         else {
-                    //             tooltip.info(locale_drag.noMulti, "");
-                    //         }
-                    //         return;
-                    //     }
-                    // }
+                        if (hasCF) {
+                            if (isEditMode()) {
+                                alert(locale_drag.noMulti);
+                            }
+                            else {
+                                tooltip.info(locale_drag.noMulti, "");
+                            }
+                            return;
+                        }
+                    }
 
-                    // //多重选区 行不一样且列不一样时 提示
-                    // if (Store.luckysheet_select_save.length > 1) {
-                    //     let isSameRow = true,
-                    //         str_r = Store.luckysheet_select_save[0].row[0],
-                    //         end_r = Store.luckysheet_select_save[0].row[1];
-                    //     let isSameCol = true,
-                    //         str_c = Store.luckysheet_select_save[0].column[0],
-                    //         end_c = Store.luckysheet_select_save[0].column[1];
+                    //多重选区 行不一样且列不一样时 提示
+                    if (Store.luckysheet_select_save.length > 1) {
+                        let isSameRow = true,
+                            str_r = Store.luckysheet_select_save[0].row[0],
+                            end_r = Store.luckysheet_select_save[0].row[1];
+                        let isSameCol = true,
+                            str_c = Store.luckysheet_select_save[0].column[0],
+                            end_c = Store.luckysheet_select_save[0].column[1];
 
-                    //     for (let s = 1; s < Store.luckysheet_select_save.length; s++) {
-                    //         if (Store.luckysheet_select_save[s].row[0] != str_r || Store.luckysheet_select_save[s].row[1] != end_r) {
-                    //             isSameRow = false;
-                    //         }
-                    //         if (Store.luckysheet_select_save[s].column[0] != str_c || Store.luckysheet_select_save[s].column[1] != end_c) {
-                    //             isSameCol = false;
-                    //         }
-                    //     }
+                        for (let s = 1; s < Store.luckysheet_select_save.length; s++) {
+                            if (Store.luckysheet_select_save[s].row[0] != str_r || Store.luckysheet_select_save[s].row[1] != end_r) {
+                                isSameRow = false;
+                            }
+                            if (Store.luckysheet_select_save[s].column[0] != str_c || Store.luckysheet_select_save[s].column[1] != end_c) {
+                                isSameCol = false;
+                            }
+                        }
 
-                    //     if ((!isSameRow && !isSameCol) || selectIsOverlap()) {
-                    //         if (isEditMode()) {
-                    //             alert(locale_drag.noMulti);
-                    //         }
-                    //         else {
-                    //             tooltip.info(locale_drag.noMulti, "");
-                    //         }
-                    //         return;
-                    //     }
-                    // }
+                        if ((!isSameRow && !isSameCol) || selectIsOverlap()) {
+                            if (isEditMode()) {
+                                alert(locale_drag.noMulti);
+                            }
+                            else {
+                                tooltip.info(locale_drag.noMulti, "");
+                            }
+                            return;
+                        }
+                    }
 
-                    // selection.copy(event);
+                    selection.copy(event);
 
-                    // Store.luckysheet_paste_iscut = false;
-                    // luckysheetactiveCell();
+                    Store.luckysheet_paste_iscut = false;
+                    luckysheetactiveCell();
 
-                    // event.stopPropagation();
+                    event.stopPropagation();
                     return;
                 }
                 else if (kcode == 70) {//Ctrl + F  查找
@@ -675,30 +680,34 @@ export function keyboardInitial () {
                     event.stopPropagation();
                     return;
                 }
-                // else if (kcode == keycode.UP) {//Ctrl + up  调整单元格
-                //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightCell2("up", "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.DOWN) {//Ctrl + down  调整单元格
-                //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightCell2("down", "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.LEFT) {//Ctrl + top  调整单元格
-                //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightCell2("left", "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.RIGHT) {//Ctrl + right  调整单元格
-                //     if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightCell2("right", "rangeOfSelect");
-                // }
+                else if (kcode == keycode.UP) {//Ctrl + up  调整单元格
+                    if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightCell2("up", "rangeOfSelect");
+                }
+                else if (kcode == keycode.DOWN) {//Ctrl + down  调整单元格
+                    if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightCell2("down", "rangeOfSelect");
+                }
+                else if (kcode == keycode.LEFT) {//Ctrl + top  调整单元格
+                    if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightCell2("left", "rangeOfSelect");
+                }
+                else if (kcode == keycode.RIGHT) {//Ctrl + right  调整单元格
+                    if (parseInt($inputbox.css("top")) > 0 || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightCell2("right", "rangeOfSelect");
+                }
                 else if (kcode == 186) {//Ctrl + ; 填充系统日期
                     let last = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1];
                     let row_index = last["row_focus"],
@@ -741,33 +750,35 @@ export function keyboardInitial () {
                 }
 
                 //shift + 方向键 调整选区
-                // if (kcode == keycode.UP) {
-                //     if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
+                if (kcode == keycode.UP) {
+                    if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
 
-                //     luckysheetMoveHighlightRange("down", -1, "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.DOWN) {
-                //     if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightRange("down", 1, "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.LEFT) {
-                //     if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightRange("right", -1, "rangeOfSelect");
-                // }
-                // else if (kcode == keycode.RIGHT) {
-                //     if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-                //         return;
-                //     }
-                //     luckysheetMoveHighlightRange("right", 1, "rangeOfSelect");
-                // }
-                //else 
-                if (altKey && (kcode == 53 || kcode == 101)) {
+                    luckysheetMoveHighlightRange("down", -1, "rangeOfSelect");
+                }
+                else if (kcode == keycode.DOWN) {
+                    if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightRange("down", 1, "rangeOfSelect");
+                }
+                else if (kcode == keycode.LEFT) {
+                    if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightRange("right", -1, "rangeOfSelect");
+                }
+                else if (kcode == keycode.RIGHT) {
+                    if ($("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                        return;
+                    }
+
+                    luckysheetMoveHighlightRange("right", 1, "rangeOfSelect");
+                }
+                else if (altKey && (kcode == 53 || kcode == 101)) {
                     //Alt + Shift + 5（删除线）
                     $("#luckysheet-icon-strikethrough").click();
                 }
@@ -803,34 +814,38 @@ export function keyboardInitial () {
                 imageCtrl.removeImgItem();
                 event.preventDefault();
             }
-            // else if (kcode == keycode.UP) {
-            //     if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-            //         return;
-            //     }
-            //     luckysheetMoveHighlightCell("down", -1, "rangeOfSelect");
-            //     event.preventDefault();
-            // }
-            // else if (kcode == keycode.DOWN) {
-            //     if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-            //         return;
-            //     }
-            //     luckysheetMoveHighlightCell("down", 1, "rangeOfSelect");
-            //     event.preventDefault();
-            // }
-            // else if (kcode == keycode.LEFT) {
-            //     if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-            //         return;
-            //     }
-            //     luckysheetMoveHighlightCell("right", -1, "rangeOfSelect");
-            //     event.preventDefault();
-            // }
-            // else if (kcode == keycode.RIGHT) {
-            //     if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
-            //         return;
-            //     }
-            //     luckysheetMoveHighlightCell("right", 1, "rangeOfSelect");
-            //     event.preventDefault();
-            // }
+            else if (kcode == keycode.UP) {
+                if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                    return;
+                }
+
+                luckysheetMoveHighlightCell("down", -1, "rangeOfSelect");
+                event.preventDefault();
+            }
+            else if (kcode == keycode.DOWN) {
+                if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                    return;
+                }
+
+                luckysheetMoveHighlightCell("down", 1, "rangeOfSelect");
+                event.preventDefault();
+            }
+            else if (kcode == keycode.LEFT) {
+                if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                    return;
+                }
+
+                luckysheetMoveHighlightCell("right", -1, "rangeOfSelect");
+                event.preventDefault();
+            }
+            else if (kcode == keycode.RIGHT) {
+                if (parseInt($inputbox.css("top")) > 0 || Store.luckysheet_cell_selected_move || Store.luckysheet_cell_selected_extend || $(event.target).hasClass("formulaInputFocus") || $("#luckysheet-singleRange-dialog").is(":visible") || $("#luckysheet-multiRange-dialog").is(":visible")) {
+                    return;
+                }
+
+                luckysheetMoveHighlightCell("right", 1, "rangeOfSelect");
+                event.preventDefault();
+            }
             else if (!((kcode >= 112 && kcode <= 123) || kcode <= 46 || kcode == 144 || kcode == 108 || event.ctrlKey || event.altKey || (event.shiftKey && (kcode == 37 || kcode == 38 || kcode == 39 || kcode == 40))) || kcode == 8 || kcode == 32 || kcode == 46 || kcode == 0 || (event.ctrlKey && kcode == 86)) {
                 if (String.fromCharCode(kcode) != null && $("#luckysheet-cell-selected").is(":visible") && (kcode != keycode.CAPSLOCK && kcode != keycode.WIN && kcode != 18)) {
                     let last = Store.luckysheet_select_save[Store.luckysheet_select_save.length - 1];
@@ -868,12 +883,12 @@ export function keyboardInitial () {
             luckysheetMoveHighlightCell("down", 0, "rangeOfSelect");
             event.preventDefault();
         }
-        // else if (kcode == keycode.ENTER && parseInt($inputbox.css("top")) > 0) {
-        //     if ($("#luckysheet-formula-search-c").is(":visible") && formula.searchFunctionCell != null) {
-        //         formula.searchFunctionEnter($("#luckysheet-formula-search-c").find(".luckysheet-formula-search-item-active"));
-        //         event.preventDefault();
-        //     }
-        // }
+        else if (kcode == keycode.ENTER && parseInt($inputbox.css("top")) > 0) {
+            if ($("#luckysheet-formula-search-c").is(":visible") && formula.searchFunctionCell != null) {
+                formula.searchFunctionEnter($("#luckysheet-formula-search-c").find(".luckysheet-formula-search-item-active"));
+                event.preventDefault();
+            }
+        }
         else if (kcode == keycode.TAB && parseInt($inputbox.css("top")) > 0) {
             if ($("#luckysheet-formula-search-c").is(":visible") && formula.searchFunctionCell != null) {
                 formula.searchFunctionEnter($("#luckysheet-formula-search-c").find(".luckysheet-formula-search-item-active"));
@@ -889,18 +904,18 @@ export function keyboardInitial () {
             formula.setfreezonFuc(event);
             event.preventDefault();
         }
-        // else if (kcode == keycode.UP && parseInt($inputbox.css("top")) > 0) {
-        //     formulaMoveEvent("up", ctrlKey, shiftKey, event);
-        // }
-        // else if (kcode == keycode.DOWN && parseInt($inputbox.css("top")) > 0) {
-        //     formulaMoveEvent("down", ctrlKey, shiftKey, event);
-        // }
-        // else if (kcode == keycode.LEFT && parseInt($inputbox.css("top")) > 0) {
-        //     formulaMoveEvent("left", ctrlKey, shiftKey, event);
-        // }
-        // else if (kcode == keycode.RIGHT && parseInt($inputbox.css("top")) > 0) {
-        //     formulaMoveEvent("right", ctrlKey, shiftKey, event);
-        // }
+        else if (kcode == keycode.UP && parseInt($inputbox.css("top")) > 0) {
+            formulaMoveEvent("up", ctrlKey, shiftKey, event);
+        }
+        else if (kcode == keycode.DOWN && parseInt($inputbox.css("top")) > 0) {
+            formulaMoveEvent("down", ctrlKey, shiftKey, event);
+        }
+        else if (kcode == keycode.LEFT && parseInt($inputbox.css("top")) > 0) {
+            formulaMoveEvent("left", ctrlKey, shiftKey, event);
+        }
+        else if (kcode == keycode.RIGHT && parseInt($inputbox.css("top")) > 0) {
+            formulaMoveEvent("right", ctrlKey, shiftKey, event);
+        }
         else if (!((kcode >= 112 && kcode <= 123) || kcode <= 46 || kcode == 144 || kcode == 108 || event.ctrlKey || event.altKey || (event.shiftKey && (kcode == 37 || kcode == 38 || kcode == 39 || kcode == 40 || kcode == keycode.WIN || kcode == keycode.WIN_R || kcode == keycode.MENU))) || kcode == 8 || kcode == 32 || kcode == 46 || (event.ctrlKey && kcode == 86)) {
             // if(event.target.id!="luckysheet-input-box" && event.target.id!="luckysheet-rich-text-editor"){
             formula.functionInputHanddler($("#luckysheet-functionbox-cell"), $("#luckysheet-rich-text-editor"), kcode);
@@ -933,9 +948,9 @@ export function keyboardInitial () {
         let shiftKey = event.shiftKey;
         let kcode = event.keyCode;
         let $t = $(this);
-        // if (kcode == keycode.ENTER) {
-        //     $t.blur().change();
-        // }
+        if (kcode == keycode.ENTER) {
+            $t.blur().change();
+        }
     }).bind('input propertychange', function () {
         let $t = $(this);
         let inputlen = getByteLen($t.val()) * 10;

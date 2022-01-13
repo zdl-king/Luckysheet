@@ -6,7 +6,7 @@
  */
 
 
-::-webkit-scrollbar-track {
+ ::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
@@ -2075,7 +2075,7 @@ body:not(.ewa-ipad) .luckysheet-rows-h-cell-sel:hover {
     right: 0;
 }
 
-/* .luckysheet-cs-fillhandle {
+.luckysheet-cs-fillhandle {
     position: absolute;
     width: 6px;
     height: 6px;
@@ -2086,7 +2086,7 @@ body:not(.ewa-ipad) .luckysheet-rows-h-cell-sel:hover {
     z-index: 16;
     pointer-events: auto;
     right: -5px;
-} */
+}
 
 .luckysheet-cs-draghandle {
     position: absolute;
