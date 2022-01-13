@@ -117,6 +117,8 @@ const gridHTML = function () {
                                                         <div class="luckysheet-selection-copy-left luckysheet-copy"></div>
                                                         <div class="luckysheet-selection-copy-hc"></div>
                                                     </div>  
+                                                    <div class="luckysheet-row-count-show luckysheet-count-show" id="luckysheet-row-count-show"></div>
+                                                    <div class="luckysheet-column-count-show luckysheet-count-show" id="luckysheet-column-count-show"></div>
                                                     <div class="luckysheet-change-size-line" id="luckysheet-change-size-line"></div>  
                                                     <div class="luckysheet-cell-selected-focus" id="luckysheet-cell-selected-focus"></div>  
                                                     <div id="luckysheet-selection-copy"></div>  
@@ -126,9 +128,12 @@ const gridHTML = function () {
                                                     <div id="luckysheet-cell-selected-boxs">
                                                         <div id="luckysheet-cell-selected" class="luckysheet-cell-selected">
                                                             <div class="luckysheet-cs-inner-border"></div>
-                                                            
+                                                            <div class="luckysheet-cs-fillhandle"></div>
                                                             <div class="luckysheet-cs-inner-border"></div>
-                                                            
+                                                            <div class="luckysheet-cs-draghandle-top luckysheet-cs-draghandle"></div>
+                                                            <div class="luckysheet-cs-draghandle-bottom luckysheet-cs-draghandle"></div>
+                                                            <div class="luckysheet-cs-draghandle-left luckysheet-cs-draghandle"></div>
+                                                            <div class="luckysheet-cs-draghandle-right luckysheet-cs-draghandle"></div>
                                                             <div class="luckysheet-cs-touchhandle luckysheet-cs-touchhandle-lt"><div class="luckysheet-cs-touchhandle-btn"></div></div>
                                                             <div class="luckysheet-cs-touchhandle luckysheet-cs-touchhandle-rb"><div class="luckysheet-cs-touchhandle-btn"></div></div>
                                                         </div>
@@ -150,7 +155,17 @@ const gridHTML = function () {
                                                                 <div class="luckysheet-modal-dialog-resize-item luckysheet-modal-dialog-resize-item-mb" data-type="mb"></div>
                                                                 <div class="luckysheet-modal-dialog-resize-item luckysheet-modal-dialog-resize-item-rb" data-type="rb"></div>
                                                             </div>
-                                                            
+                                                            <div class="luckysheet-modal-dialog-controll">
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-crop" role="button" tabindex="0" aria-label="裁剪" title="裁剪">
+                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                </span>
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-restore" role="button" tabindex="0" aria-label="恢复原图" title="恢复原图">
+                                                                    <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                                                                </span>
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-del" role="button" tabindex="0" aria-label="删除" title="删除">
+                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                         <div id="luckysheet-modal-dialog-cropping" class="luckysheet-modal-dialog" style="display:none;padding:0;position:absolute;z-index:300;">
                                                             <div class="cropping-mask"></div>
@@ -166,7 +181,17 @@ const gridHTML = function () {
                                                                 <div class="resize-item mb" data-type="mb"></div> 
                                                                 <div class="resize-item rb" data-type="rb"></div>
                                                             </div>
-                                                            
+                                                            <div class="luckysheet-modal-dialog-controll">
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-crop" role="button" tabindex="0" aria-label="裁剪" title="裁剪">
+                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                </span>
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-restore" role="button" tabindex="0" aria-label="恢复原图" title="恢复原图">
+                                                                    <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                                                                </span>
+                                                                <span class="luckysheet-modal-controll-btn luckysheet-modal-controll-del" role="button" tabindex="0" aria-label="删除" title="删除">
+                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                         <div class="img-list"></div>
                                                         <div class="cell-date-picker">
@@ -612,7 +637,7 @@ const sheetHTML = '<div style="${style}" id="luckysheet-sheets-item${index}" dat
     columnHeaderHTML = '<div class="luckysheet-cols-h-cells luckysheetsheetchange"  id="luckysheet-cols-h-cells_${index}" style="width:${width}px;"> <div class="luckysheet-cols-h-cells-c"> <div class="luckysheet-grdblkpush"></div>${column}</div></div>',
     sheetselectlistHTML = '<div class="luckysheet-cols-menu luckysheet-rightgclick-menu luckysheet-mousedown-cancel" id="luckysheet-sheet-list">${item}</div>',
     sheetselectlistitemHTML = '<div class="luckysheet-cols-menuitem luckysheet-mousedown-cancel"  id="luckysheet-sheet-btn${index}" data-index="${index}"><div class="luckysheet-cols-menuitem-content luckysheet-mousedown-cancel" style="${style}" ><span class="icon luckysheet-mousedown-cancel">${icon}</span>${name}</div></div>',
-    inputHTML = '<div dir="ltr"><div id="luckysheet-input-box" spellcheck="false" aria-hidden="false" class="luckysheet-input-box"><div class="luckysheet-cell-input editable" tabindex="0" role="combobox" contenteditable="true" id="luckysheet-rich-text-editor" dir="ltr" g_editable="true" aria-autocomplete="list"></div></div></div>',
+    inputHTML = '<div dir="ltr"><div class="luckysheet-input-box-index" id="luckysheet-input-box-index"></div><div id="luckysheet-input-box" spellcheck="false" aria-hidden="false" class="luckysheet-input-box"><div class="luckysheet-cell-input editable" tabindex="0" role="combobox" contenteditable="true" id="luckysheet-rich-text-editor" dir="ltr" g_editable="true" aria-autocomplete="list"></div></div></div>',
     modelHTML = '<div id="${id}" style="${style}" class="luckysheet-modal-dialog ${addclass}" tabindex="0" role="dialog" aria-labelledby=":41e" dir="ltr"> <div class="luckysheet-modal-dialog-title luckysheet-modal-dialog-title-draggable"> <span class="luckysheet-modal-dialog-title-text" role="heading">${title}</span>	 <span class="luckysheet-modal-dialog-title-close" role="button" tabindex="0" aria-label="${close}"><i class="fa fa-times" aria-hidden="true"></i></span> </div> <div class="luckysheet-modal-dialog-content">${content}</div> <div class="luckysheet-modal-dialog-buttons">	 ${botton} </div></div>',
 
     maskHTML = '<div class="luckysheet-modal-dialog-mask" id="luckysheet-modal-dialog-mask"></div>';

@@ -362,88 +362,88 @@ const imageCtrl = {
         });
 
         //image active
-        // $("#luckysheet-image-showBoxs").off("mousedown.active").on("mousedown.active", ".luckysheet-modal-dialog-image", function(e) {
+        $("#luckysheet-image-showBoxs").off("mousedown.active").on("mousedown.active", ".luckysheet-modal-dialog-image", function (e) {
 
 
-        //     if(!checkProtectionAuthorityNormal(Store.currentSheetIndex, "editObjects",false)){
-        //         return;
-        //     }
+            if (!checkProtectionAuthorityNormal(Store.currentSheetIndex, "editObjects", false)) {
+                return;
+            }
 
-        //     $(this).hide();
-        //     let id = $(this).attr("id");
+            $(this).hide();
+            let id = $(this).attr("id");
 
-        //     if(_this.currentImgId != null && _this.currentImgId != id){
-        //         _this.cancelActiveImgItem();
-        //     }
+            if (_this.currentImgId != null && _this.currentImgId != id) {
+                _this.cancelActiveImgItem();
+            }
 
-        //     _this.currentImgId = id;
+            _this.currentImgId = id;
 
-        //     let item = _this.images[id];
-        //     let imgItemParam = _this.getImgItemParam(item);
+            let item = _this.images[id];
+            let imgItemParam = _this.getImgItemParam(item);
 
-        //     let width = imgItemParam.width * Store.zoomRatio;
-        //     let height = imgItemParam.height * Store.zoomRatio;
-        //     let left = imgItemParam.left * Store.zoomRatio;
-        //     let top = imgItemParam.top * Store.zoomRatio;
-        //     let position = imgItemParam.position;
+            let width = imgItemParam.width * Store.zoomRatio;
+            let height = imgItemParam.height * Store.zoomRatio;
+            let left = imgItemParam.left * Store.zoomRatio;
+            let top = imgItemParam.top * Store.zoomRatio;
+            let position = imgItemParam.position;
 
-        //     $("#luckysheet-modal-dialog-activeImage").show().css({
-        //         "width": width,
-        //         "height": height,
-        //         "left": left,
-        //         "top": top,
-        //         "position": position
-        //     });
-        //     let imageUrlHandle = Store.toJsonOptions && Store.toJsonOptions['imageUrlHandle'];
-        //     let imgUrl = typeof imageUrlHandle === 'function' ? imageUrlHandle(item.src) : item.src;
-        //     $("#luckysheet-modal-dialog-activeImage .luckysheet-modal-dialog-content").css({
-        //         "background-image": "url(" + imgUrl + ")",
-        //         "background-size": item.default.width * Store.zoomRatio + "px " + item.default.height * Store.zoomRatio + "px",
-        //         "background-position": -item.crop.offsetLeft * Store.zoomRatio + "px " + -item.crop.offsetTop * Store.zoomRatio + "px"
-        //     })
+            $("#luckysheet-modal-dialog-activeImage").show().css({
+                "width": width,
+                "height": height,
+                "left": left,
+                "top": top,
+                "position": position
+            });
+            let imageUrlHandle = Store.toJsonOptions && Store.toJsonOptions['imageUrlHandle'];
+            let imgUrl = typeof imageUrlHandle === 'function' ? imageUrlHandle(item.src) : item.src;
+            $("#luckysheet-modal-dialog-activeImage .luckysheet-modal-dialog-content").css({
+                "background-image": "url(" + imgUrl + ")",
+                "background-size": item.default.width * Store.zoomRatio + "px " + item.default.height * Store.zoomRatio + "px",
+                "background-position": -item.crop.offsetLeft * Store.zoomRatio + "px " + -item.crop.offsetTop * Store.zoomRatio + "px"
+            })
 
-        //     $("#luckysheet-modal-dialog-activeImage .luckysheet-modal-dialog-border").css({
-        //         "border-width": item.border.width * Store.zoomRatio,
-        //         "border-style": item.border.style,
-        //         "border-color": item.border.color,
-        //         "border-radius": item.border.radius * Store.zoomRatio,
-        //         "left": -item.border.width * Store.zoomRatio,
-        //         "right": -item.border.width * Store.zoomRatio,
-        //         "top": -item.border.width * Store.zoomRatio,
-        //         "bottom": -item.border.width * Store.zoomRatio,
-        //     })
+            $("#luckysheet-modal-dialog-activeImage .luckysheet-modal-dialog-border").css({
+                "border-width": item.border.width * Store.zoomRatio,
+                "border-style": item.border.style,
+                "border-color": item.border.color,
+                "border-radius": item.border.radius * Store.zoomRatio,
+                "left": -item.border.width * Store.zoomRatio,
+                "right": -item.border.width * Store.zoomRatio,
+                "top": -item.border.width * Store.zoomRatio,
+                "bottom": -item.border.width * Store.zoomRatio,
+            })
 
-        //     _this.sliderHtmlShow();
+            _this.sliderHtmlShow();
 
-        //     e.stopPropagation();
-        // })
+            e.stopPropagation();
+        })
 
         //image move
-        // $("#luckysheet-modal-dialog-activeImage").off("mousedown.move").on("mousedown.move", ".luckysheet-modal-dialog-content", function(e) {
-        //     if(!checkProtectionAuthorityNormal(Store.currentSheetIndex, "editObjects",false)){
-        //         return;
-        //     }
+        $("#luckysheet-modal-dialog-activeImage").off("mousedown.move").on("mousedown.move", ".luckysheet-modal-dialog-content", function (e) {
+            if (!checkProtectionAuthorityNormal(Store.currentSheetIndex, "editObjects", false)) {
+                return;
+            }
 
-        //     if(!$("#luckysheet-modal-dialog-slider-imageCtrl").is(":visible")){
-        //         _this.sliderHtmlShow();
-        //     }
+            if (!$("#luckysheet-modal-dialog-slider-imageCtrl").is(":visible")) {
+                _this.sliderHtmlShow();
+            }
 
-        //     _this.move = true;
+            _this.move = true;
 
-        //     _this.currentWinW = $("#luckysheet-cell-main")[0].scrollWidth;
-        //     _this.currentWinH = $("#luckysheet-cell-main")[0].scrollHeight;
+            _this.currentWinW = $("#luckysheet-cell-main")[0].scrollWidth;
+            _this.currentWinH = $("#luckysheet-cell-main")[0].scrollHeight;
 
-        //     let offset = $("#luckysheet-modal-dialog-activeImage").offset();
+            let offset = $("#luckysheet-modal-dialog-activeImage").offset();
 
-        //     _this.moveXY = [
-        //         e.pageX - offset.left, 
-        //         e.pageY - offset.top, 
-        //     ];
+            _this.moveXY = [
+                e.pageX - offset.left,
+                e.pageY - offset.top,
+            ];
 
-        //     setluckysheet_scroll_status(true);
+            setluckysheet_scroll_status(true);
 
-        //     e.stopPropagation();
-        // })
+            e.stopPropagation();
+        })
 
         //image resize
         $("#luckysheet-modal-dialog-activeImage").off("mousedown.resize").on("mousedown.resize", ".luckysheet-modal-dialog-resize-item", function (e) {

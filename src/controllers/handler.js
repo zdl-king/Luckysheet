@@ -290,11 +290,11 @@ export default function luckysheetHandler () {
         // 协同编辑其他用户不在操作的时候，用户名框隐藏
         hideUsername();
 
-        // $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
-        // .css("cursor","default")
-        // .end()
-        // .find(".luckysheet-cs-draghandle")
-        // .css("cursor","default");
+        $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
+            .css("cursor", "default")
+            .end()
+            .find(".luckysheet-cs-draghandle")
+            .css("cursor", "default");
         $("#luckysheet-cell-main, #luckysheetTableContent, #luckysheet-sheettable_0").css("cursor", "default");
 
         //有批注在编辑时
@@ -3400,7 +3400,7 @@ export default function luckysheetHandler () {
         window.cancelAnimationFrame(Store.jfautoscrollTimeout);
         Store.luckysheet_scroll_status = false;
 
-        //$("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle").css("cursor", "crosshair").end().find(".luckysheet-cs-draghandle").css("cursor", "move");
+        $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle").css("cursor", "crosshair").end().find(".luckysheet-cs-draghandle").css("cursor", "move");
         $("#luckysheet-cell-main, #luckysheetTableContent, #luckysheet-sheettable_0").css("cursor", "default");
 
         //行标题窗格主体
@@ -4298,11 +4298,11 @@ export default function luckysheetHandler () {
             return;
         }
 
-        // $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
-        //     .css("cursor", "move")
-        //     .end()
-        //     .find(".luckysheet-cs-draghandle")
-        //     .css("cursor", "move");
+        $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
+            .css("cursor", "move")
+            .end()
+            .find(".luckysheet-cs-draghandle")
+            .css("cursor", "move");
         $("#luckysheet-cell-main, #luckysheetTableContent, #luckysheet-sheettable_0").css("cursor", "move");
 
         Store.luckysheet_cell_selected_move = true;
@@ -4335,161 +4335,166 @@ export default function luckysheetHandler () {
     });
 
     //选区下拉
-    // $("#luckysheet-cell-main div.luckysheet-cs-fillhandle").mousedown(function (event) {
-    //     if (isEditMode() || Store.allowEdit === false) {//此模式下禁用选区下拉
-    //         return;
-    //     }
-    //     $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
-    //         .css("cursor", "crosshair")
-    //         .end()
-    //         .find(".luckysheet-cs-draghandle")
-    //         .css("cursor", "crosshair");
-    //     $("#luckysheet-cell-main, #luckysheetTableContent, #luckysheet-sheettable_0").css("cursor", "crosshair");
-    //     Store.luckysheet_cell_selected_extend_time = setTimeout(function () {
-    //         Store.luckysheet_cell_selected_extend = true;
-    //         Store.luckysheet_scroll_status = true;
-    //         let mouse = mouseposition(event.pageX, event.pageY);
-    //         let x = mouse[0] + $("#luckysheet-cell-main").scrollLeft() - 5;
-    //         let y = mouse[1] + $("#luckysheet-cell-main").scrollTop() - 5;
-    //         let row_location = rowLocation(y),
-    //             row_pre = row_location[0],
-    //             row = row_location[1],
-    //             row_index = row_location[2];
-    //         let col_location = colLocation(x),
-    //             col_pre = col_location[0],
-    //             col = col_location[1],
-    //             col_index = col_location[2];
-    //         Store.luckysheet_cell_selected_extend_index = [row_index, col_index];
+    $("#luckysheet-cell-main div.luckysheet-cs-fillhandle").mousedown(function (event) {
+        if (isEditMode() || Store.allowEdit === false) {//此模式下禁用选区下拉
+            return;
+        }
 
-    //         $("#luckysheet-cell-selected-extend").css({
-    //             "left": col_pre,
-    //             "width": col - col_pre - 1,
-    //             "top": row_pre,
-    //             "height": row - row_pre - 1,
-    //             "display": "block"
-    //         });
-    //     }, 100);
+        $("#luckysheet-cell-selected").find(".luckysheet-cs-fillhandle")
+            .css("cursor", "crosshair")
+            .end()
+            .find(".luckysheet-cs-draghandle")
+            .css("cursor", "crosshair");
+        $("#luckysheet-cell-main, #luckysheetTableContent, #luckysheet-sheettable_0").css("cursor", "crosshair");
 
-    //     event.stopPropagation();
-    // }).click(function () {
-    //     clearTimeout(Store.luckysheet_cell_selected_extend_time);
-    //     event.stopPropagation();
-    // }).dblclick(function () {
-    //     let last = Store.luckysheet_select_save[0];
+        Store.luckysheet_cell_selected_extend_time = setTimeout(function () {
+            Store.luckysheet_cell_selected_extend = true;
+            Store.luckysheet_scroll_status = true;
 
-    //     let r0 = last.row[0],
-    //         r1 = last.row[1],
-    //         c0 = last.column[0],
-    //         c1 = last.column[1];
+            let mouse = mouseposition(event.pageX, event.pageY);
+            let x = mouse[0] + $("#luckysheet-cell-main").scrollLeft() - 5;
+            let y = mouse[1] + $("#luckysheet-cell-main").scrollTop() - 5;
 
-    //     if (pivotTable.isPivotRange(r0, c0)) {
-    //         return;
-    //     }
+            let row_location = rowLocation(y),
+                row_pre = row_location[0],
+                row = row_location[1],
+                row_index = row_location[2];
+            let col_location = colLocation(x),
+                col_pre = col_location[0],
+                col = col_location[1],
+                col_index = col_location[2];
 
-    //     let dropCellState = false;
-    //     let step = 0;
+            Store.luckysheet_cell_selected_extend_index = [row_index, col_index];
 
-    //     for (let r = r1 + 1; r < Store.flowdata.length; r++) {
-    //         if (c0 - 1 >= 0 && c1 + 1 < Store.flowdata[0].length) {
-    //             let cell1 = Store.flowdata[r][c0 - 1];
-    //             let cell2 = Store.flowdata[r][c1 + 1];
+            $("#luckysheet-cell-selected-extend").css({
+                "left": col_pre,
+                "width": col - col_pre - 1,
+                "top": row_pre,
+                "height": row - row_pre - 1,
+                "display": "block"
+            });
+        }, 100);
 
-    //             if (r == r1 + 1) {
-    //                 if ((cell1 == null || isRealNull(cell1.v)) && (cell2 == null || isRealNull(cell2.v))) {
-    //                     dropCellState = false;
-    //                     break;
-    //                 }
-    //                 else {
-    //                     dropCellState = true;
-    //                     step++;
-    //                 }
-    //             }
-    //             else {
-    //                 if ((cell1 == null || isRealNull(cell1.v)) && (cell2 == null || isRealNull(cell2.v))) {
-    //                     break;
-    //                 }
+        event.stopPropagation();
+    }).click(function () {
+        clearTimeout(Store.luckysheet_cell_selected_extend_time);
+        event.stopPropagation();
+    }).dblclick(function () {
+        let last = Store.luckysheet_select_save[0];
 
-    //                 step++;
-    //             }
-    //         }
-    //         else if (c0 - 1 >= 0) {
-    //             let cell = Store.flowdata[r][c0 - 1];
+        let r0 = last.row[0],
+            r1 = last.row[1],
+            c0 = last.column[0],
+            c1 = last.column[1];
 
-    //             if (r == r1 + 1) {
-    //                 if (cell == null || isRealNull(cell.v)) {
-    //                     dropCellState = false;
-    //                     break;
-    //                 }
-    //                 else {
-    //                     dropCellState = true;
-    //                     step++;
-    //                 }
-    //             }
-    //             else {
-    //                 if (cell == null || isRealNull(cell.v)) {
-    //                     break;
-    //                 }
+        if (pivotTable.isPivotRange(r0, c0)) {
+            return;
+        }
 
-    //                 step++;
-    //             }
-    //         }
-    //         else if (c1 + 1 < Store.flowdata[0].length) {
-    //             let cell = Store.flowdata[r][c1 + 1];
+        let dropCellState = false;
+        let step = 0;
 
-    //             if (r == r1 + 1) {
-    //                 if (cell == null || isRealNull(cell.v)) {
-    //                     dropCellState = false;
-    //                     break;
-    //                 }
-    //                 else {
-    //                     dropCellState = true;
-    //                     step++;
-    //                 }
-    //             }
-    //             else {
-    //                 if (cell == null || isRealNull(cell.v)) {
-    //                     break;
-    //                 }
+        for (let r = r1 + 1; r < Store.flowdata.length; r++) {
+            if (c0 - 1 >= 0 && c1 + 1 < Store.flowdata[0].length) {
+                let cell1 = Store.flowdata[r][c0 - 1];
+                let cell2 = Store.flowdata[r][c1 + 1];
 
-    //                 step++;
-    //             }
-    //         }
-    //     }
+                if (r == r1 + 1) {
+                    if ((cell1 == null || isRealNull(cell1.v)) && (cell2 == null || isRealNull(cell2.v))) {
+                        dropCellState = false;
+                        break;
+                    }
+                    else {
+                        dropCellState = true;
+                        step++;
+                    }
+                }
+                else {
+                    if ((cell1 == null || isRealNull(cell1.v)) && (cell2 == null || isRealNull(cell2.v))) {
+                        break;
+                    }
 
-    //     if (!dropCellState || step == 0) {
-    //         event.stopPropagation();
-    //         return;
-    //     }
+                    step++;
+                }
+            }
+            else if (c0 - 1 >= 0) {
+                let cell = Store.flowdata[r][c0 - 1];
 
-    //     //复制范围
-    //     luckysheetDropCell.copyRange = { "row": [r0, r1], "column": [c0, c1] };
+                if (r == r1 + 1) {
+                    if (cell == null || isRealNull(cell.v)) {
+                        dropCellState = false;
+                        break;
+                    }
+                    else {
+                        dropCellState = true;
+                        step++;
+                    }
+                }
+                else {
+                    if (cell == null || isRealNull(cell.v)) {
+                        break;
+                    }
 
-    //     //applyType
-    //     let typeItemHide = luckysheetDropCell.typeItemHide();
+                    step++;
+                }
+            }
+            else if (c1 + 1 < Store.flowdata[0].length) {
+                let cell = Store.flowdata[r][c1 + 1];
 
-    //     if (!typeItemHide[0] && !typeItemHide[1] && !typeItemHide[2] && !typeItemHide[3] && !typeItemHide[4] && !typeItemHide[5] && !typeItemHide[6]) {
-    //         luckysheetDropCell.applyType = "0";
-    //     }
-    //     else {
-    //         luckysheetDropCell.applyType = "1";
-    //     }
+                if (r == r1 + 1) {
+                    if (cell == null || isRealNull(cell.v)) {
+                        dropCellState = false;
+                        break;
+                    }
+                    else {
+                        dropCellState = true;
+                        step++;
+                    }
+                }
+                else {
+                    if (cell == null || isRealNull(cell.v)) {
+                        break;
+                    }
 
-    //     luckysheetDropCell.applyRange = { "row": [r1 + 1, r1 + step], "column": [c0, c1] };
-    //     luckysheetDropCell.direction = "down";
+                    step++;
+                }
+            }
+        }
 
-    //     Store.luckysheet_select_save = [{ "row": [r0, r1 + step], "column": [c0, c1] }];
+        if (!dropCellState || step == 0) {
+            event.stopPropagation();
+            return;
+        }
 
-    //     luckysheetDropCell.update();
-    //     luckysheetDropCell.createIcon();
+        //复制范围
+        luckysheetDropCell.copyRange = { "row": [r0, r1], "column": [c0, c1] };
 
-    //     $("#luckysheet-cell-selected-move").hide();
+        //applyType
+        let typeItemHide = luckysheetDropCell.typeItemHide();
 
-    //     $("#luckysheet-sheettable").css("cursor", "default");
-    //     clearTimeout(Store.countfuncTimeout);
-    //     Store.countfuncTimeout = setTimeout(function () { countfunc() }, 500);
+        if (!typeItemHide[0] && !typeItemHide[1] && !typeItemHide[2] && !typeItemHide[3] && !typeItemHide[4] && !typeItemHide[5] && !typeItemHide[6]) {
+            luckysheetDropCell.applyType = "0";
+        }
+        else {
+            luckysheetDropCell.applyType = "1";
+        }
 
-    //     event.stopPropagation();
-    // });
+        luckysheetDropCell.applyRange = { "row": [r1 + 1, r1 + step], "column": [c0, c1] };
+        luckysheetDropCell.direction = "down";
+
+        Store.luckysheet_select_save = [{ "row": [r0, r1 + step], "column": [c0, c1] }];
+
+        luckysheetDropCell.update();
+        luckysheetDropCell.createIcon();
+
+        $("#luckysheet-cell-selected-move").hide();
+
+        $("#luckysheet-sheettable").css("cursor", "default");
+        clearTimeout(Store.countfuncTimeout);
+        Store.countfuncTimeout = setTimeout(function () { countfunc() }, 500);
+
+        event.stopPropagation();
+    });
 
     //
     $("#luckysheet-bottom-add-row, #luckysheet-bottom-add-row-input, #luckysheet-bottom-return-top").on("mousedown dblclick mouseup", function (e) {

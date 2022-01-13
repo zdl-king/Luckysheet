@@ -5177,10 +5177,6 @@ export function setSheetActive (order, options = {}) {
     $("#luckysheet-sheet-area div.luckysheet-sheets-item").removeClass("luckysheet-sheets-item-active");
     $("#luckysheet-sheets-item" + file.index).addClass("luckysheet-sheets-item-active");
 
-    if (parseInt($("#luckysheet-input-box").css("top")) > 0) {
-        formula.updatecell(Store.luckysheetCellUpdate[0], Store.luckysheetCellUpdate[1]);
-    }
-
     sheetmanage.changeSheet(file.index);
 
     setTimeout(() => {
